@@ -34,7 +34,7 @@ pub type InstagramPostType {
 }
 
 pub type PixelfedLayout {
-  Full
+  Full(caption: Bool, likes: Bool)
   Compact
 }
 
@@ -105,12 +105,7 @@ pub type MastodonConfig {
 }
 
 pub type PixelfedConfig {
-  PixelfedConfig(
-    servers: List(String),
-    caption: Bool,
-    likes: Bool,
-    layout: PixelfedLayout,
-  )
+  PixelfedConfig(servers: List(String), layout: PixelfedLayout)
 }
 
 pub fn default_config() -> Config {
@@ -126,6 +121,24 @@ pub fn default_config() -> Config {
     openstreetmap: Some(OpenStreetMapConfig),
     ted: Some(TedConfig),
     soundcloud: Some(SoundCloudConfig),
+    mastodon: None,
+    pixelfed: None,
+  )
+}
+
+pub fn new() -> Config {
+  Config(
+    youtube: None,
+    vimeo: None,
+    spotify: None,
+    twitter: None,
+    tiktok: None,
+    bluesky: None,
+    instagram: None,
+    twitch: None,
+    openstreetmap: None,
+    ted: None,
+    soundcloud: None,
     mastodon: None,
     pixelfed: None,
   )

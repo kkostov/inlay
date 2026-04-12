@@ -25,12 +25,17 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
   case embed {
     PixelfedPost(server, user, id) -> {
       let #(caption, likes, layout) = case config.pixelfed {
-        Some(embed.PixelfedConfig(caption: c, likes: l, layout: ly, ..)) -> #(
+        Some(embed.PixelfedConfig(layout: embed.Full(caption: c, likes: l), ..)) -> #(
           c,
           l,
-          ly,
+          embed.Full(c, l),
         )
-        None -> #(True, True, embed.Full)
+        Some(embed.PixelfedConfig(layout: embed.Compact, ..)) -> #(
+          False,
+          False,
+          embed.Compact,
+        )
+        None -> #(True, True, embed.Full(True, True))
       }
       let caption_str = bool_to_string(caption)
       let likes_str = bool_to_string(likes)
@@ -87,7 +92,7 @@ fn bool_to_string(value: Bool) -> String {
 
 fn layout_to_string(layout: embed.PixelfedLayout) -> String {
   case layout {
-    embed.Full -> "full"
+    embed.Full(..) -> "full"
     embed.Compact -> "compact"
   }
 }

@@ -64,6 +64,10 @@ pub fn default_config() -> Config {
   embed.default_config()
 }
 
+pub fn new() -> Config {
+  embed.new()
+}
+
 pub fn youtube(config: Config, youtube_config: YoutubeConfig) -> Config {
   Config(..config, youtube: Some(youtube_config))
 }

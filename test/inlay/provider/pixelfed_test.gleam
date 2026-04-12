@@ -10,9 +10,7 @@ fn config_with_pixelfed() -> embed.Config {
     ..embed.default_config(),
     pixelfed: Some(PixelfedConfig(
       servers: ["pixelfed.social", "pixelfed.de"],
-      caption: True,
-      likes: True,
-      layout: Full,
+      layout: Full(caption: True, likes: True),
     )),
   )
 }
@@ -20,12 +18,7 @@ fn config_with_pixelfed() -> embed.Config {
 fn config_with_pixelfed_compact() -> embed.Config {
   embed.Config(
     ..embed.default_config(),
-    pixelfed: Some(PixelfedConfig(
-      servers: ["pixelfed.social"],
-      caption: False,
-      likes: False,
-      layout: Compact,
-    )),
+    pixelfed: Some(PixelfedConfig(servers: ["pixelfed.social"], layout: Compact)),
   )
 }
 
@@ -99,9 +92,7 @@ pub fn render_script_tag_uses_correct_server_test() {
       ..embed.default_config(),
       pixelfed: Some(PixelfedConfig(
         servers: ["pixelfed.de"],
-        caption: True,
-        likes: True,
-        layout: Full,
+        layout: Full(caption: True, likes: True),
       )),
     )
   let e = PixelfedPost("pixelfed.de", "fotograf", "788060252604363209")

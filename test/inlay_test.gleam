@@ -109,9 +109,7 @@ pub fn pixelfed_detect_with_config_test() {
     inlay.default_config()
     |> inlay.pixelfed(PixelfedConfig(
       servers: ["pixelfed.social"],
-      caption: True,
-      likes: True,
-      layout: Full,
+      layout: Full(caption: True, likes: True),
     ))
   let assert Some(PixelfedPost(
     "pixelfed.social",
@@ -168,4 +166,43 @@ pub fn a_component_with_twitch_config_test() {
   let html = element.to_string(el)
   let assert True = string.contains(html, "player.twitch.tv")
   let assert True = string.contains(html, "mysite.com")
+}
+
+pub fn new_config_detects_nothing_test() {
+  let assert None =
+    inlay.detect_with(
+      "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      inlay.new(),
+    )
+}
+
+pub fn new_config_with_enabled_provider_test() {
+  let config =
+    inlay.new()
+    |> inlay.youtube(YoutubeConfig(no_cookie: True))
+  let assert Some(YoutubeVideo("dQw4w9WgXcQ", None, None)) =
+    inlay.detect_with("https://www.youtube.com/watch?v=dQw4w9WgXcQ", config)
+}
+
+pub fn new_config_ignores_disabled_providers_test() {
+  let config =
+    inlay.new()
+    |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"]))
+  let assert None =
+    inlay.detect_with("https://www.youtube.com/watch?v=dQw4w9WgXcQ", config)
+}
+
+pub fn new_config_mastodon_only_test() {
+  let config =
+    inlay.new()
+    |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"]))
+  let assert Some(MastodonPost(
+    "mastodon.social",
+    "iamkonstantin",
+    "116391354521208947",
+  )) =
+    inlay.detect_with(
+      "https://mastodon.social/@iamkonstantin/116391354521208947",
+      config,
+    )
 }

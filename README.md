@@ -5,7 +5,7 @@
 
 Embed media URLs in [Lustre](https://hexdocs.pm/lustre/) views and [Blogatto](https://blogat.to/) markdown. Paste a YouTube, Spotify, or Bluesky link and get a ready-to-render embed element.
 
-Supports 12 providers: YouTube, Vimeo, Spotify, Twitter/X, TikTok, Bluesky, Instagram, Twitch, OpenStreetMap, TED, SoundCloud, and Mastodon.
+Supports 13 providers: YouTube, Vimeo, Spotify, Twitter/X, TikTok, Bluesky, Instagram, Twitch, OpenStreetMap, TED, SoundCloud, Mastodon, and Pixelfed.
 
 ## Installation
 
@@ -154,9 +154,25 @@ Embed URLs are replaced with the provider element; everything else passes throug
 
 ## Configuration
 
-All providers are enabled by default except **Twitch** (requires a `parent` domain) and **Mastodon** (requires a server allowlist).
+Use `new()` to start with all providers disabled and enable only what you need, or `default_config()` to start with most providers enabled.
 
-### Disabling providers
+### Opt-in configuration
+
+```gleam
+import inlay
+import inlay/embed.{MastodonConfig}
+
+let config =
+  inlay.new()
+  |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"]))
+
+case inlay.embed_with(url, config) {
+  Some(element) -> element
+  None -> html.text("Not embeddable")
+}
+```
+
+### Disabling specific providers
 
 ```gleam
 let config =
@@ -191,6 +207,7 @@ let config =
 | Vimeo | `VimeoConfig` | `dnt: Bool` | `True` |
 | Twitch | `TwitchConfig` | `parent: String` | disabled |
 | Mastodon | `MastodonConfig` | `servers: List(String)` | disabled |
+| Pixelfed | `PixelfedConfig` | `servers: List(String)`, `layout: PixelfedLayout` | disabled |
 | Spotify | `SpotifyConfig` | — | enabled |
 | Twitter/X | `TwitterConfig` | — | enabled |
 | TikTok | `TikTokConfig` | — | enabled |
@@ -216,6 +233,7 @@ let config =
 | TED | `ted.com/talks/slug` |
 | SoundCloud | `soundcloud.com/artist/track` |
 | Mastodon | `mastodon.social/@user/ID` (configured servers only) |
+| Pixelfed | `pixelfed.social/p/user/ID` (configured servers only) |
 
 ## Development
 

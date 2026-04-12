@@ -11,13 +11,12 @@ import lustre/element.{type Element}
 import lustre/element/html
 
 fn inlay_config() -> inlay.Config {
-  inlay.default_config()
+  inlay.new()
+  |> inlay.youtube(embed.YoutubeConfig(no_cookie: True))
   |> inlay.mastodon(embed.MastodonConfig(servers: ["mastodon.social"]))
   |> inlay.pixelfed(embed.PixelfedConfig(
     servers: ["pixelfed.social"],
-    caption: True,
-    likes: True,
-    layout: embed.Full,
+    layout: embed.Full(caption: True, likes: True),
   ))
 }
 
@@ -37,7 +36,10 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
     |> option.unwrap(element.none())
 
   let youtube_embed =
-    inlay.embed("https://www.youtube.com/watch?v=XBu0m5JAUsA")
+    inlay.embed_with(
+      "https://www.youtube.com/watch?v=XBu0m5JAUsA",
+      inlay_config(),
+    )
     |> option.unwrap(element.none())
 
   html.html([], [
@@ -47,14 +49,14 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
         attribute.name("viewport"),
         attribute.attribute("content", "width=device-width, initial-scale=1"),
       ]),
-      html.title([], "Social Embeds"),
+      html.title([], "Inlay - render embedded links"),
       html.style([], css()),
     ]),
     html.body([], [
       html.div([attribute.class("container")], [
-        html.h1([], [element.text("Social Embeds")]),
+        html.h1([], [element.text("Inlay - render embedded links")]),
         html.p([attribute.class("subtitle")], [
-          element.text("Mastodon and Pixelfed posts embedded with inlay"),
+          element.text("Example of embedded links"),
         ]),
         html.div([attribute.class("embed-section")], [
           html.h2([], [element.text("Mastodon")]),
