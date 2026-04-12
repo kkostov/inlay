@@ -37,7 +37,7 @@ pub fn render(embed: Embed, _config: Config) -> Element(msg) {
         ]),
       ])
     }
-    _ -> element.text("")
+    _ -> panic as "unreachable"
   }
 }
 

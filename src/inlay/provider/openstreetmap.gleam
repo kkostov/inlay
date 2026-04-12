@@ -4,9 +4,8 @@ import gleam/option.{type Option, None, Some}
 import gleam/string
 import gleam/uri.{type Uri}
 import inlay/embed.{type Config, type Embed, MapLocation}
-import lustre/attribute
+import inlay/iframe
 import lustre/element.{type Element}
-import lustre/element/html
 
 pub fn detect(url: Uri) -> Option(Embed) {
   case url.host {
@@ -32,31 +31,9 @@ pub fn render(embed: Embed, _config: Config) -> Element(msg) {
         <> float.to_string(lat)
         <> "%2C"
         <> float.to_string(long)
-      html.div(
-        [
-          attribute.styles([
-            #("position", "relative"),
-            #("padding-bottom", "75%"),
-            #("height", "0"),
-            #("overflow", "hidden"),
-          ]),
-        ],
-        [
-          html.iframe([
-            attribute.src(src),
-            attribute.styles([
-              #("position", "absolute"),
-              #("top", "0"),
-              #("left", "0"),
-              #("width", "100%"),
-              #("height", "100%"),
-            ]),
-            attribute.attribute("frameborder", "0"),
-          ]),
-        ],
-      )
+      iframe.responsive(src, "75%", [])
     }
-    _ -> element.text("")
+    _ -> panic as "unreachable"
   }
 }
 

@@ -3,7 +3,7 @@ import gleam/uri.{type Uri}
 import inlay/embed.{
   type Config, type Embed, BlueskyPost, InstagramPost, MapLocation, MastodonPost,
   SoundCloudTrack, SpotifyMedia, TedTalk, TikTokVideo, Tweet, TwitchChannel,
-  TwitchVideo, VimeoVideo, YouTubePlaylist, YouTubeVideo,
+  TwitchVideo, VimeoVideo, YoutubePlaylist, YoutubeVideo,
 }
 import inlay/provider/bluesky
 import inlay/provider/instagram
@@ -20,26 +20,24 @@ import inlay/provider/youtube
 import lustre/element.{type Element}
 
 pub fn detect(url: Uri, config: Config) -> Option(Embed) {
-  use <- try_one(url, youtube.detect)
-  use <- try_one(url, ted.detect)
-  use <- try_one(url, vimeo.detect)
-  use <- try_one(url, spotify.detect)
-  use <- try_one(url, bluesky.detect)
-  use <- try_one(url, twitch.detect)
-  use <- try_one(url, soundcloud.detect)
-  use <- try_one(url, twitter.detect)
-  use <- try_one(url, tiktok.detect)
-  use <- try_one(url, instagram.detect)
-  use <- try_one(url, openstreetmap.detect)
-  case mastodon.detect(url, config) {
-    Some(found) -> Some(found)
-    None -> None
-  }
+  use <- try_one(config.youtube, url, youtube.detect)
+  use <- try_one(config.ted, url, ted.detect)
+  use <- try_one(config.vimeo, url, vimeo.detect)
+  use <- try_one(config.spotify, url, spotify.detect)
+  use <- try_one(config.bluesky, url, bluesky.detect)
+  use <- try_one(config.twitch, url, twitch.detect)
+  use <- try_one(config.soundcloud, url, soundcloud.detect)
+  use <- try_one(config.twitter, url, twitter.detect)
+  use <- try_one(config.tiktok, url, tiktok.detect)
+  use <- try_one(config.instagram, url, instagram.detect)
+  use <- try_one(config.openstreetmap, url, openstreetmap.detect)
+  use <- try_one(config.mastodon, url, fn(u) { mastodon.detect(u, config) })
+  None
 }
 
 pub fn render(embed: Embed, config: Config) -> Element(msg) {
   case embed {
-    YouTubeVideo(..) | YouTubePlaylist(..) -> youtube.render(embed, config)
+    YoutubeVideo(..) | YoutubePlaylist(..) -> youtube.render(embed, config)
     VimeoVideo(..) -> vimeo.render(embed, config)
     SpotifyMedia(..) -> spotify.render(embed, config)
     Tweet(..) -> twitter.render(embed, config)
@@ -55,12 +53,17 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
 }
 
 fn try_one(
+  enabled: Option(a),
   url: Uri,
   detector: fn(Uri) -> Option(Embed),
   next: fn() -> Option(Embed),
 ) -> Option(Embed) {
-  case detector(url) {
-    Some(found) -> Some(found)
+  case enabled {
+    Some(_) ->
+      case detector(url) {
+        Some(found) -> Some(found)
+        None -> next()
+      }
     None -> next()
   }
 }

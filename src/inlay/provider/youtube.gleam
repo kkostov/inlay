@@ -3,10 +3,10 @@ import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/string
 import gleam/uri.{type Uri}
-import inlay/embed.{type Config, type Embed, YouTubePlaylist, YouTubeVideo}
+import inlay/embed.{type Config, type Embed, YoutubePlaylist, YoutubeVideo}
+import inlay/iframe
 import lustre/attribute
 import lustre/element.{type Element}
-import lustre/element/html
 
 pub fn detect(url: Uri) -> Option(Embed) {
   case url.host {
@@ -25,7 +25,7 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
   }
 
   let src = case embed {
-    YouTubeVideo(id, start_time, playlist) -> {
+    YoutubeVideo(id, start_time, playlist) -> {
       let base = domain <> "/embed/" <> id
       let params = case start_time, playlist {
         Some(t), Some(p) -> "?start=" <> int.to_string(t) <> "&list=" <> p
@@ -35,38 +35,17 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
       }
       base <> params
     }
-    YouTubePlaylist(id) -> domain <> "/embed/videoseries?list=" <> id
-    _ -> ""
+    YoutubePlaylist(id) -> domain <> "/embed/videoseries?list=" <> id
+    _ -> panic as "unreachable"
   }
 
-  html.div(
-    [
-      attribute.styles([
-        #("position", "relative"),
-        #("padding-bottom", "56.25%"),
-        #("height", "0"),
-        #("overflow", "hidden"),
-      ]),
-    ],
-    [
-      html.iframe([
-        attribute.src(src),
-        attribute.styles([
-          #("position", "absolute"),
-          #("top", "0"),
-          #("left", "0"),
-          #("width", "100%"),
-          #("height", "100%"),
-        ]),
-        attribute.attribute("frameborder", "0"),
-        attribute.attribute("allowfullscreen", "true"),
-        attribute.attribute(
-          "allow",
-          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
-        ),
-      ]),
-    ],
-  )
+  iframe.responsive(src, "56.25%", [
+    attribute.attribute("allowfullscreen", "true"),
+    attribute.attribute(
+      "allow",
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+    ),
+  ])
 }
 
 fn detect_youtube(url: Uri) -> Option(Embed) {
@@ -76,8 +55,8 @@ fn detect_youtube(url: Uri) -> Option(Embed) {
   case segments {
     ["watch"] -> detect_watch(query_params)
     ["playlist"] -> detect_playlist(query_params)
-    ["embed", id] -> Some(YouTubeVideo(id, find_start(query_params), None))
-    ["shorts", id] -> Some(YouTubeVideo(id, None, None))
+    ["embed", id] -> Some(YoutubeVideo(id, find_start(query_params), None))
+    ["shorts", id] -> Some(YoutubeVideo(id, None, None))
     _ -> None
   }
 }
@@ -85,14 +64,14 @@ fn detect_youtube(url: Uri) -> Option(Embed) {
 fn detect_watch(params: List(#(String, String))) -> Option(Embed) {
   case find_param(params, "v") {
     Some(id) ->
-      Some(YouTubeVideo(id, find_start(params), find_param(params, "list")))
+      Some(YoutubeVideo(id, find_start(params), find_param(params, "list")))
     None -> None
   }
 }
 
 fn detect_playlist(params: List(#(String, String))) -> Option(Embed) {
   case find_param(params, "list") {
-    Some(id) -> Some(YouTubePlaylist(id))
+    Some(id) -> Some(YoutubePlaylist(id))
     None -> None
   }
 }
@@ -100,7 +79,7 @@ fn detect_playlist(params: List(#(String, String))) -> Option(Embed) {
 fn detect_short(url: Uri) -> Option(Embed) {
   let params = parse_query(url)
   case uri.path_segments(url.path) {
-    [id] if id != "" -> Some(YouTubeVideo(id, find_start(params), None))
+    [id] if id != "" -> Some(YoutubeVideo(id, find_start(params), None))
     _ -> None
   }
 }

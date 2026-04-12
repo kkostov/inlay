@@ -4,7 +4,7 @@ import gleeunit
 import inlay
 import inlay/embed.{
   BlueskyPost, MastodonConfig, MastodonPost, SpotifyMedia, SpotifyTrack, TedTalk,
-  TwitchConfig, YouTubePlaylist, YouTubeVideo, YoutubeConfig,
+  TwitchConfig, YoutubePlaylist, YoutubeVideo, YoutubeConfig,
 }
 import lustre/element
 
@@ -13,12 +13,12 @@ pub fn main() -> Nil {
 }
 
 pub fn detect_youtube_video_test() {
-  let assert Some(YouTubeVideo("dQw4w9WgXcQ", None, None)) =
+  let assert Some(YoutubeVideo("dQw4w9WgXcQ", None, None)) =
     inlay.detect("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 }
 
 pub fn detect_youtube_playlist_test() {
-  let assert Some(YouTubePlaylist("PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf")) =
+  let assert Some(YoutubePlaylist("PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf")) =
     inlay.detect(
       "https://www.youtube.com/playlist?list=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf",
     )
@@ -71,10 +71,16 @@ pub fn embed_with_custom_config_test() {
   let assert True = string.contains(html, "www.youtube.com/embed/test123")
 }
 
+pub fn disabled_provider_returns_none_for_detect_test() {
+  let config = inlay.default_config() |> inlay.no_youtube()
+  let assert None =
+    inlay.detect_with("https://www.youtube.com/watch?v=dQw4w9WgXcQ", config)
+}
+
 pub fn disabled_provider_returns_none_for_embed_test() {
   let config = inlay.default_config() |> inlay.no_youtube()
-  let assert Some(YouTubeVideo(..)) =
-    inlay.detect_with("https://www.youtube.com/watch?v=dQw4w9WgXcQ", config)
+  let assert None =
+    inlay.embed_with("https://www.youtube.com/watch?v=dQw4w9WgXcQ", config)
 }
 
 pub fn mastodon_detect_with_config_test() {

@@ -1,8 +1,8 @@
 import gleam/option.{type Option, None, Some}
 
 pub type Embed {
-  YouTubeVideo(id: String, start_time: Option(Int), playlist: Option(String))
-  YouTubePlaylist(id: String)
+  YoutubeVideo(id: String, start_time: Option(Int), playlist: Option(String))
+  YoutubePlaylist(id: String)
   VimeoVideo(id: String, privacy_hash: Option(String))
   SpotifyMedia(media_type: SpotifyMediaType, id: String)
   Tweet(handle: String, id: String)

@@ -56,8 +56,8 @@ The `Embed` type is a public tagged union. You can match on it for per-provider 
 
 ```gleam
 case inlay.detect(url) {
-  Some(inlay.YouTubeVideo(id, ..)) -> custom_youtube_player(id)
-  Some(inlay.SpotifyMedia(..)) -> html.div([class("spotify-wrapper")], [inlay.render(embed)])
+  Some(inlay.YoutubeVideo(id, ..)) -> custom_youtube_player(id)
+  Some(inlay.SpotifyMedia(..) as embed) -> html.div([class("spotify-wrapper")], [inlay.render(embed)])
   Some(embed) -> inlay.render(embed)
   None -> html.a([attribute.href(url)], [html.text(url)])
 }
@@ -173,7 +173,6 @@ case inlay.embed_with("https://x.com/user/status/123", config) {
 ### Configuring providers
 
 ```gleam
-import gleam/option.{Some}
 import inlay
 import inlay/embed.{MastodonConfig, TwitchConfig, YoutubeConfig}
 
