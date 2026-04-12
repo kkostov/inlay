@@ -1,0 +1,9 @@
+name = "social_embeds"
+version = "1.0.0"
+target = "erlang"
+
+[dependencies]
+gleam_stdlib = ">= 0.44.0 and < 2.0.0"
+lustre = ">= 5.6.0 and < 6.0.0"
+blogatto = ">= 5.1.0 and < 6.0.0"
+inlay = { path = "../../" }
