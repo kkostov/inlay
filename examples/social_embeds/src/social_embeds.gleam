@@ -36,6 +36,10 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
     )
     |> option.unwrap(element.none())
 
+  let youtube_embed =
+    inlay.embed("https://www.youtube.com/watch?v=XBu0m5JAUsA")
+    |> option.unwrap(element.none())
+
   html.html([], [
     html.head([], [
       html.meta([attribute.attribute("charset", "utf-8")]),
@@ -59,6 +63,10 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
         html.div([attribute.class("embed-section")], [
           html.h2([], [element.text("Pixelfed")]),
           pixelfed_embed,
+        ]),
+        html.div([attribute.class("embed-section")], [
+          html.h2([], [element.text("YouTube")]),
+          youtube_embed,
         ]),
       ]),
     ]),
