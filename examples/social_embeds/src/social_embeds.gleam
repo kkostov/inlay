@@ -16,7 +16,7 @@ fn inlay_config() -> inlay.Config {
   |> inlay.pixelfed(embed.PixelfedConfig(
     servers: ["pixelfed.social"],
     caption: True,
-    likes: False,
+    likes: True,
     layout: embed.Full,
   ))
 }
