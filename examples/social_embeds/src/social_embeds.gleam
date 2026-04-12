@@ -43,7 +43,7 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
     |> option.unwrap(element.none())
 
   let bluesky_embed =
-    inlay.embed("https://bsky.app/profile/flowvi.be/post/3max7rufmvp2y")
+    inlay.embed("https://bsky.app/profile/did:plc:bwm3ipmp7fidz67iy4atioa5/post/3max7rufmvp2y")
     |> option.unwrap(element.none())
 
   html.html([], [

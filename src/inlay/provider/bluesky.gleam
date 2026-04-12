@@ -15,7 +15,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
 pub fn render(embed: Embed, _config: Config) -> Element(msg) {
   case embed {
     BlueskyPost(handle, rkey) -> {
-      let src = "https://embed.bsky.app/embed/" <> handle <> "/post/" <> rkey
+      let src = "https://embed.bsky.app/embed/" <> handle <> "/app.bsky.feed.post/" <> rkey
       html.div([], [
         html.iframe([
           attribute.src(src),

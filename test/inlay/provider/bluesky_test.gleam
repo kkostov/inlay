@@ -37,6 +37,6 @@ pub fn render_bluesky_post_test() {
   let assert True =
     string.contains(
       html,
-      "embed.bsky.app/embed/jay.bsky.social/post/3jt5dwi5gzc2x",
+      "embed.bsky.app/embed/jay.bsky.social/app.bsky.feed.post/3jt5dwi5gzc2x",
     )
 }
