@@ -58,4 +58,5 @@ pub fn render_mastodon_post_test() {
     )
   let assert True = string.contains(html, "mastodon-embed")
   let assert True = string.contains(html, "https://mastodon.social/embed.js")
+  let assert True = string.contains(html, "sandbox")
 }

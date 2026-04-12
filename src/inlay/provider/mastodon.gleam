@@ -34,6 +34,7 @@ pub fn render(embed: Embed, _config: Config) -> Element(msg) {
           attribute.width(400),
           attribute.attribute("allowfullscreen", "true"),
           attribute.attribute("loading", "lazy"),
+          attribute.attribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"),
         ]),
         html.script(
           [
