@@ -54,6 +54,12 @@ pub type SoundCloudConfig =
 pub type MastodonConfig =
   embed.MastodonConfig
 
+pub type PixelfedConfig =
+  embed.PixelfedConfig
+
+pub type PixelfedLayout =
+  embed.PixelfedLayout
+
 pub fn default_config() -> Config {
   embed.default_config()
 }
@@ -152,6 +158,14 @@ pub fn mastodon(config: Config, mastodon_config: MastodonConfig) -> Config {
 
 pub fn no_mastodon(config: Config) -> Config {
   Config(..config, mastodon: None)
+}
+
+pub fn pixelfed(config: Config, pixelfed_config: PixelfedConfig) -> Config {
+  Config(..config, pixelfed: Some(pixelfed_config))
+}
+
+pub fn no_pixelfed(config: Config) -> Config {
+  Config(..config, pixelfed: None)
 }
 
 pub fn detect(url: String) -> Option(Embed) {

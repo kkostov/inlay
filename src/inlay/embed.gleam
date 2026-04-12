@@ -15,6 +15,7 @@ pub type Embed {
   TedTalk(slug: String)
   SoundCloudTrack(path: String)
   MastodonPost(server: String, user: String, id: String)
+  PixelfedPost(server: String, user: String, id: String)
 }
 
 pub type SpotifyMediaType {
@@ -32,6 +33,11 @@ pub type InstagramPostType {
   TV
 }
 
+pub type PixelfedLayout {
+  Full
+  Compact
+}
+
 pub type Config {
   Config(
     youtube: Option(YoutubeConfig),
@@ -46,6 +52,7 @@ pub type Config {
     ted: Option(TedConfig),
     soundcloud: Option(SoundCloudConfig),
     mastodon: Option(MastodonConfig),
+    pixelfed: Option(PixelfedConfig),
   )
 }
 
@@ -97,6 +104,15 @@ pub type MastodonConfig {
   MastodonConfig(servers: List(String))
 }
 
+pub type PixelfedConfig {
+  PixelfedConfig(
+    servers: List(String),
+    caption: Bool,
+    likes: Bool,
+    layout: PixelfedLayout,
+  )
+}
+
 pub fn default_config() -> Config {
   Config(
     youtube: Some(YoutubeConfig(no_cookie: True)),
@@ -111,5 +127,6 @@ pub fn default_config() -> Config {
     ted: Some(TedConfig),
     soundcloud: Some(SoundCloudConfig),
     mastodon: None,
+    pixelfed: None,
   )
 }

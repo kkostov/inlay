@@ -29,10 +29,7 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
       let src = base <> params
       iframe.responsive(src, "56.25%", [
         attribute.attribute("allowfullscreen", "true"),
-        attribute.attribute(
-          "allow",
-          "autoplay; fullscreen; picture-in-picture",
-        ),
+        attribute.attribute("allow", "autoplay; fullscreen; picture-in-picture"),
       ])
     }
     _ -> panic as "unreachable"

@@ -16,9 +16,12 @@ fn config_with_mastodon() -> embed.Config {
 
 pub fn standard_mastodon_url_test() {
   let assert Ok(url) =
-    uri.parse("https://mastodon.social/@user/112345678901234567")
-  let assert Some(MastodonPost("mastodon.social", "user", "112345678901234567")) =
-    mastodon.detect(url, config_with_mastodon())
+    uri.parse("https://mastodon.social/@iamkonstantin/116391354521208947")
+  let assert Some(MastodonPost(
+    "mastodon.social",
+    "iamkonstantin",
+    "116391354521208947",
+  )) = mastodon.detect(url, config_with_mastodon())
 }
 
 pub fn fosstodon_url_test() {
@@ -46,8 +49,11 @@ pub fn non_user_path_returns_none_test() {
 }
 
 pub fn render_mastodon_post_test() {
-  let e = MastodonPost("mastodon.social", "user", "112345678901234567")
+  let e = MastodonPost("mastodon.social", "iamkonstantin", "116391354521208947")
   let html = element.to_string(mastodon.render(e, config_with_mastodon()))
   let assert True =
-    string.contains(html, "mastodon.social/@user/112345678901234567/embed")
+    string.contains(
+      html,
+      "mastodon.social/@iamkonstantin/116391354521208947/embed",
+    )
 }

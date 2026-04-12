@@ -2,13 +2,14 @@ import gleam/option.{type Option, None, Some}
 import gleam/uri.{type Uri}
 import inlay/embed.{
   type Config, type Embed, BlueskyPost, InstagramPost, MapLocation, MastodonPost,
-  SoundCloudTrack, SpotifyMedia, TedTalk, TikTokVideo, Tweet, TwitchChannel,
-  TwitchVideo, VimeoVideo, YoutubePlaylist, YoutubeVideo,
+  PixelfedPost, SoundCloudTrack, SpotifyMedia, TedTalk, TikTokVideo, Tweet,
+  TwitchChannel, TwitchVideo, VimeoVideo, YoutubePlaylist, YoutubeVideo,
 }
 import inlay/provider/bluesky
 import inlay/provider/instagram
 import inlay/provider/mastodon
 import inlay/provider/openstreetmap
+import inlay/provider/pixelfed
 import inlay/provider/soundcloud
 import inlay/provider/spotify
 import inlay/provider/ted
@@ -20,6 +21,8 @@ import inlay/provider/youtube
 import lustre/element.{type Element}
 
 pub fn detect(url: Uri, config: Config) -> Option(Embed) {
+  use <- try_one(config.mastodon, url, fn(u) { mastodon.detect(u, config) })
+  use <- try_one(config.pixelfed, url, fn(u) { pixelfed.detect(u, config) })
   use <- try_one(config.youtube, url, youtube.detect)
   use <- try_one(config.ted, url, ted.detect)
   use <- try_one(config.vimeo, url, vimeo.detect)
@@ -31,7 +34,6 @@ pub fn detect(url: Uri, config: Config) -> Option(Embed) {
   use <- try_one(config.tiktok, url, tiktok.detect)
   use <- try_one(config.instagram, url, instagram.detect)
   use <- try_one(config.openstreetmap, url, openstreetmap.detect)
-  use <- try_one(config.mastodon, url, fn(u) { mastodon.detect(u, config) })
   None
 }
 
@@ -49,6 +51,7 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
     TedTalk(..) -> ted.render(embed, config)
     SoundCloudTrack(..) -> soundcloud.render(embed, config)
     MastodonPost(..) -> mastodon.render(embed, config)
+    PixelfedPost(..) -> pixelfed.render(embed, config)
   }
 }
 

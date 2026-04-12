@@ -3,8 +3,9 @@ import gleam/string
 import gleeunit
 import inlay
 import inlay/embed.{
-  BlueskyPost, MastodonConfig, MastodonPost, SpotifyMedia, SpotifyTrack, TedTalk,
-  TwitchConfig, YoutubePlaylist, YoutubeVideo, YoutubeConfig,
+  BlueskyPost, Full, MastodonConfig, MastodonPost, PixelfedConfig, PixelfedPost,
+  SpotifyMedia, SpotifyTrack, TedTalk, TwitchConfig, YoutubeConfig,
+  YoutubePlaylist, YoutubeVideo,
 }
 import lustre/element
 
@@ -87,12 +88,45 @@ pub fn mastodon_detect_with_config_test() {
   let config =
     inlay.default_config()
     |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"]))
-  let assert Some(MastodonPost("mastodon.social", "user", "123456")) =
-    inlay.detect_with("https://mastodon.social/@user/123456", config)
+  let assert Some(MastodonPost(
+    "mastodon.social",
+    "iamkonstantin",
+    "116391354521208947",
+  )) =
+    inlay.detect_with(
+      "https://mastodon.social/@iamkonstantin/116391354521208947",
+      config,
+    )
 }
 
 pub fn mastodon_detect_without_config_returns_none_test() {
-  let assert None = inlay.detect("https://mastodon.social/@user/123456")
+  let assert None =
+    inlay.detect("https://mastodon.social/@iamkonstantin/116391354521208947")
+}
+
+pub fn pixelfed_detect_with_config_test() {
+  let config =
+    inlay.default_config()
+    |> inlay.pixelfed(PixelfedConfig(
+      servers: ["pixelfed.social"],
+      caption: True,
+      likes: True,
+      layout: Full,
+    ))
+  let assert Some(PixelfedPost(
+    "pixelfed.social",
+    "kkonstantin",
+    "788060252604363209",
+  )) =
+    inlay.detect_with(
+      "https://pixelfed.social/p/kkonstantin/788060252604363209",
+      config,
+    )
+}
+
+pub fn pixelfed_detect_without_config_returns_none_test() {
+  let assert None =
+    inlay.detect("https://pixelfed.social/p/kkonstantin/788060252604363209")
 }
 
 pub fn a_component_default_embeds_youtube_test() {
