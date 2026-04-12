@@ -29,12 +29,20 @@ pub fn render(embed: Embed, _config: Config) -> Element(msg) {
       html.div([], [
         html.iframe([
           attribute.src(src),
+          attribute.class("mastodon-embed"),
+          attribute.styles([#("max-width", "100%"), #("border", "0")]),
           attribute.width(400),
-          attribute.height(400),
-          attribute.attribute("frameborder", "0"),
           attribute.attribute("allowfullscreen", "true"),
           attribute.attribute("loading", "lazy"),
         ]),
+        html.script(
+          [
+            attribute.src("https://" <> server <> "/embed.js"),
+            attribute.attribute("async", "true"),
+            attribute.attribute("defer", "true"),
+          ],
+          "",
+        ),
       ])
     }
     _ -> panic as "unreachable"
