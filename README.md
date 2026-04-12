@@ -3,17 +3,22 @@
 [![Package Version](https://img.shields.io/hexpm/v/inlay)](https://hex.pm/packages/inlay)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/inlay/)
 
-Embed media URLs in [Lustre](https://hexdocs.pm/lustre/) views and [Blogatto](https://blogat.to/) markdown. Paste a YouTube, Spotify, or Bluesky link and get a ready-to-render embed element.
 
-Supports 13 providers: YouTube, Vimeo, Spotify, Twitter/X, TikTok, Bluesky, Instagram, Twitch, OpenStreetMap, TED, SoundCloud, Mastodon, and Pixelfed.
+Inlay is a library which renders embedded previews for social links (Mastodon, Pixelfed, YouTube, Spotify, etc..) as part of markdon ([Blogatto](https://blogat.to/)) or [Lustre](https://hexdocs.pm/lustre/) views.
+
+## Supported providers
+
+Mastodon, Pixelfed, Bluesky, Instagram, Twitch, OpenStreetMap, , SoundCloud, YouTube, Vimeo, Spotify, TED, Twitter/X, and TikTok
 
 ## Installation
 
 ```sh
-gleam add inlay@1
+gleam add inlay
 ```
 
 ## Quick start
+
+Get an embedded view in a Lustre component:
 
 ```gleam
 import gleam/option.{None, Some}
