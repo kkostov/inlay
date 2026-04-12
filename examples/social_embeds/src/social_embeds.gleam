@@ -50,9 +50,7 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
       html.div([attribute.class("container")], [
         html.h1([], [element.text("Social Embeds")]),
         html.p([attribute.class("subtitle")], [
-          element.text(
-            "Mastodon and Pixelfed posts embedded with inlay",
-          ),
+          element.text("Mastodon and Pixelfed posts embedded with inlay"),
         ]),
         html.div([attribute.class("embed-section")], [
           html.h2([], [element.text("Mastodon")]),
@@ -108,7 +106,7 @@ p.subtitle {
 "
 }
 
-fn config() -> config.Config(Nil) {
+pub fn config() -> config.Config(Nil) {
   config.new("https://example.com")
   |> config.output_dir("./dist")
   |> config.route("/", home_view)
