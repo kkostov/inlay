@@ -8,7 +8,7 @@ Inlay is a library which renders embedded previews for social links (Mastodon, P
 
 ## Supported providers
 
-Mastodon, Pixelfed, Bluesky, Instagram, Twitch, OpenStreetMap, , SoundCloud, YouTube, Vimeo, Spotify, TED, Twitter/X, and TikTok
+Mastodon, Pixelfed, Bluesky, Instagram, Twitch, OpenStreetMap, SoundCloud, YouTube, Vimeo, Spotify, TED, Twitter/X, and TikTok
 
 ## Installation
 
@@ -33,20 +33,11 @@ pub fn view(url: String) {
 }
 ```
 
-## Usage
+## Lustre
 
-### Two-step: detect + render
+### `embed()`
 
-`detect` parses a URL and returns an `Embed` value identifying the provider and its parsed data. `render` turns that into a Lustre element.
-
-```gleam
-case inlay.detect("https://youtu.be/dQw4w9WgXcQ") {
-  Some(embed) -> inlay.render(embed)
-  None -> html.text("Not embeddable")
-}
-```
-
-### One-step convenience
+Render an embed for the provided url:
 
 ```gleam
 case inlay.embed("https://open.spotify.com/track/4PTG3Z6ehGkBFwjybzWkR8") {
@@ -55,9 +46,20 @@ case inlay.embed("https://open.spotify.com/track/4PTG3Z6ehGkBFwjybzWkR8") {
 }
 ```
 
-### Pattern matching on Embed
+### `detect()` + `render()`
 
-The `Embed` type is a public tagged union. You can match on it for per-provider control:
+When you need access to the `Embed` value before rendering (e.g. for pattern matching):
+
+```gleam
+case inlay.detect("https://youtu.be/dQw4w9WgXcQ") {
+  Some(embed) -> inlay.render(embed)
+  None -> html.text("Not embeddable")
+}
+```
+
+### Pattern matching on `Embed`
+
+The `Embed` type is a public tagged union, so you can match on it for per-provider control:
 
 ```gleam
 case inlay.detect(url) {
@@ -68,74 +70,39 @@ case inlay.detect(url) {
 }
 ```
 
-### Lustre SPA
-
-Build a utility function to use anywhere in your views:
-
-```gleam
-import gleam/list
-import gleam/option.{None, Some}
-import inlay
-import lustre/attribute
-import lustre/element.{type Element}
-import lustre/element/html
-
-pub fn link_or_embed(url: String) -> Element(msg) {
-  case inlay.detect(url) {
-    Some(embed) -> inlay.render(embed)
-    None -> html.a([attribute.href(url)], [html.text(url)])
-  }
-}
-
-pub fn view_post_body(lines: List(String)) -> Element(msg) {
-  html.div([], list.map(lines, fn(line) {
-    case inlay.detect(line) {
-      Some(embed) -> inlay.render(embed)
-      None -> html.p([], [html.text(line)])
-    }
-  }))
-}
-```
-
 ### Server-side rendering
 
-Lustre elements render to HTML strings for SSR:
+Lustre elements can be rendered to HTML strings:
 
 ```gleam
-import lustre/element
-
 case inlay.embed("https://vimeo.com/148751763") {
   Some(el) -> element.to_string(el)
   None -> "<p>Not embeddable</p>"
 }
 ```
 
-### Blogatto integration
+## Blogatto
 
-Inlay integrates with [Blogatto](https://blogat.to/)'s markdown component system. Anchor tags pointing to embeddable URLs are replaced with embed elements at the AST level.
+[Blogatto](https://blogat.to/)'s markdown renderer lets you replace how specific HTML tags are produced. Inlay provides a custom `<a>` tag handler -- when the href points to an embeddable URL, the link is replaced with an embedded preview. Non-embeddable links pass through to a fallback function. You can intercept and further customize this behavior if needed.
 
-**Zero-config** (standard anchor fallback for non-embed links):
+### `a_component_default()`
+
+Default handler with standard anchor fallback:
 
 ```gleam
-import blogatto/config/markdown
-import inlay
-
 let md =
   markdown.default()
   |> markdown.markdown_path("./blog")
   |> markdown.a(inlay.a_component_default())
 ```
 
-**With custom anchor handling** (e.g. external links open in a new tab):
+### `a_component(fallback)`
+
+If Inlay doesn't render an embed, you can control what happens to the link with a custom fallback.
+
+For example, let's make sure external links open in a new tab:
 
 ```gleam
-import gleam/option.{None, Some}
-import gleam/string
-import blogatto/config/markdown
-import lustre/attribute
-import lustre/element/html
-import inlay
-
 let my_a = fn(href, title, children) {
   let attrs = case string.starts_with(href, "http") {
     True -> [attribute.href(href), attribute.target("_blank"),
@@ -155,18 +122,15 @@ let md =
   |> markdown.a(inlay.a_component(my_a))
 ```
 
-Embed URLs are replaced with the provider element; everything else passes through to your fallback.
-
 ## Configuration
 
-Use `new()` to start with all providers disabled and enable only what you need, or `default_config()` to start with most providers enabled.
+`inlay.new()` has all providers disabled -- you have to opt in to what you need (any other links will fall through and not have an embed). `inlay.default_config()` starts with some providers enabled -- you can opt out of what you don't want.
 
-### Opt-in configuration
+### Opt-in with `new()`
+
+This is the recommended approach to avoid unexpected embeddings with links on your website.
 
 ```gleam
-import inlay
-import inlay/embed.{MastodonConfig}
-
 let config =
   inlay.new()
   |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"]))
@@ -177,68 +141,24 @@ case inlay.embed_with(url, config) {
 }
 ```
 
-### Disabling specific providers
+### Disabling providers
 
 ```gleam
 let config =
   inlay.default_config()
   |> inlay.no_twitter()
   |> inlay.no_tiktok()
-
-case inlay.embed_with("https://x.com/user/status/123", config) {
-  Some(_) -> // won't match — Twitter is disabled
-  None -> // falls through
-}
 ```
 
-### Configuring providers
+### Provider-specific config
 
 ```gleam
-import inlay
-import inlay/embed.{MastodonConfig, TwitchConfig, YoutubeConfig}
-
 let config =
   inlay.default_config()
   |> inlay.youtube(YoutubeConfig(no_cookie: False))
   |> inlay.twitch(TwitchConfig(parent: "mysite.com"))
   |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social", "fosstodon.org"]))
 ```
-
-### Provider config reference
-
-| Provider | Config type | Fields | Default |
-|----------|------------|--------|---------|
-| YouTube | `YoutubeConfig` | `no_cookie: Bool` | `True` |
-| Vimeo | `VimeoConfig` | `dnt: Bool` | `True` |
-| Twitch | `TwitchConfig` | `parent: String` | disabled |
-| Mastodon | `MastodonConfig` | `servers: List(String)` | disabled |
-| Pixelfed | `PixelfedConfig` | `servers: List(String)`, `layout: PixelfedLayout` | disabled |
-| Spotify | `SpotifyConfig` | — | enabled |
-| Twitter/X | `TwitterConfig` | — | enabled |
-| TikTok | `TikTokConfig` | — | enabled |
-| Bluesky | `BlueskyConfig` | — | enabled |
-| Instagram | `InstagramConfig` | — | enabled |
-| OpenStreetMap | `OpenStreetMapConfig` | — | enabled |
-| TED | `TedConfig` | — | enabled |
-| SoundCloud | `SoundCloudConfig` | — | enabled |
-
-## Supported providers
-
-| Provider | Example URL |
-|----------|------------|
-| YouTube | `youtube.com/watch?v=ID`, `youtu.be/ID`, playlists |
-| Vimeo | `vimeo.com/148751763` |
-| Spotify | `open.spotify.com/track/ID`, albums, playlists, artists, episodes, shows |
-| Twitter/X | `twitter.com/user/status/ID`, `x.com/user/status/ID` |
-| TikTok | `tiktok.com/@user/video/ID` |
-| Bluesky | `bsky.app/profile/handle/post/ID` |
-| Instagram | `instagram.com/p/ID`, `/reel/ID`, `/tv/ID` |
-| Twitch | `twitch.tv/channel`, `twitch.tv/videos/ID` |
-| OpenStreetMap | `openstreetmap.org/...#map=zoom/lat/long` |
-| TED | `ted.com/talks/slug` |
-| SoundCloud | `soundcloud.com/artist/track` |
-| Mastodon | `mastodon.social/@user/ID` (configured servers only) |
-| Pixelfed | `pixelfed.social/p/user/ID` (configured servers only) |
 
 ## Development
 
