@@ -42,6 +42,10 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
     )
     |> option.unwrap(element.none())
 
+  let bluesky_embed =
+    inlay.embed("https://bsky.app/profile/flowvi.be/post/3max7rufmvp2y")
+    |> option.unwrap(element.none())
+
   html.html([], [
     html.head([], [
       html.meta([attribute.attribute("charset", "utf-8")]),
@@ -66,9 +70,14 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
           html.h2([], [element.text("Pixelfed")]),
           pixelfed_embed,
         ]),
+
         html.div([attribute.class("embed-section")], [
           html.h2([], [element.text("YouTube")]),
           youtube_embed,
+        ]),
+        html.div([attribute.class("embed-section")], [
+          html.h2([], [element.text("Bluesky")]),
+          bluesky_embed,
         ]),
       ]),
     ]),
