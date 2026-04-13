@@ -5,6 +5,7 @@ description = "Embed links in Lustre views and Blogatto markdown"
 licences = ["MIT"]
 repository = { type = "github", user = "kkostov", repo = "inlay" }
 links = [
+  { title = "Website", href = "https://inlay.statichost.page" },
   { title = "Codeberg", href = "https://codeberg.org/iamkonstantin/inlay" },
 ]
 
