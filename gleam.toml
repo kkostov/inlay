@@ -1,7 +1,7 @@
 name = "inlay"
 version = "1.0.0"
 
-description = "Embed media URLs in Lustre views and Blogatto markdown"
+description = "Embed links in Lustre views and Blogatto markdown"
 licences = ["MIT"]
 repository = { type = "github", user = "kkostov", repo = "inlay" }
 

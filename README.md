@@ -16,7 +16,77 @@ Mastodon, Pixelfed, Apple Music, Bluesky, Spotify, Instagram, OpenStreetMap, Sou
 gleam add inlay
 ```
 
-## Quick start
+## Configuration
+
+`inlay.new()` has all providers disabled -- you have to opt in to what you need (any other links will fall through and not have an embed). `inlay.default_config()` starts with some providers enabled -- you can opt out of what you don't want.
+
+### Opt-in with `new()`
+
+This is the recommended approach to avoid unexpected embeddings with links on your website.
+
+```gleam
+let config =
+  inlay.new()
+  |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"]))
+
+case inlay.embed_with(url, config) {
+  Some(element) -> element
+  None -> html.text("Not embeddable")
+}
+```
+
+### Disabling providers
+
+```gleam
+let config =
+  inlay.default_config()
+  |> inlay.no_twitter()
+  |> inlay.no_tiktok()
+```
+
+### Provider-specific config
+
+```gleam
+let config =
+  inlay.default_config()
+  |> inlay.youtube(YoutubeConfig(no_cookie: False))
+  |> inlay.twitch(TwitchConfig(parent: "mysite.com"))
+  |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social", "fosstodon.org"]))
+```
+
+### Bluesky
+
+Bluesky embeds need an AT Protocol URI (`at://did:plc:.../app.bsky.feed.post/...`) to render the rich embed widget. When the post URL already contains a DID handle (e.g. `did:plc:z72i7hdynmk6r22z27h6tvur`), the embed works out of the box with the default config.
+
+For human-readable handles (e.g. `alice.bsky.social`) or custom domains (e.g. `flowvi.be`), you need to provide a `resolve_handle` function that resolves the handle to a DID.
+
+Here is an example (but your implementation may depend on whether you're targetting javascript or erlang):
+
+```gleam
+import gleam/dynamic/decode
+import gleam/httpc
+import gleam/http/request
+import gleam/json
+import gleam/option.{Some}
+import gleam/result
+import inlay.{BlueskyConfig}
+
+let resolve = fn(handle) {
+  let url =
+    "https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle="
+    <> handle
+  use req <- result.try(request.to(url) |> result.replace_error(Nil))
+  use resp <- result.try(httpc.send(req) |> result.replace_error(Nil))
+  json.parse(resp.body, decode.at(["did"], decode.string))
+  |> result.replace_error(Nil)
+}
+
+let config =
+  inlay.default_config()
+  |> inlay.bluesky(BlueskyConfig(resolve_handle: Some(resolve)))
+```
+
+## Lustre
 
 Get an embedded view in a Lustre component:
 
@@ -32,8 +102,6 @@ pub fn view(url: String) {
   }
 }
 ```
-
-## Lustre
 
 ### `embed()`
 
@@ -120,76 +188,6 @@ let md =
   markdown.default()
   |> markdown.markdown_path("./blog")
   |> markdown.a(inlay.a_component(my_a))
-```
-
-## Configuration
-
-`inlay.new()` has all providers disabled -- you have to opt in to what you need (any other links will fall through and not have an embed). `inlay.default_config()` starts with some providers enabled -- you can opt out of what you don't want.
-
-### Opt-in with `new()`
-
-This is the recommended approach to avoid unexpected embeddings with links on your website.
-
-```gleam
-let config =
-  inlay.new()
-  |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"]))
-
-case inlay.embed_with(url, config) {
-  Some(element) -> element
-  None -> html.text("Not embeddable")
-}
-```
-
-### Disabling providers
-
-```gleam
-let config =
-  inlay.default_config()
-  |> inlay.no_twitter()
-  |> inlay.no_tiktok()
-```
-
-### Provider-specific config
-
-```gleam
-let config =
-  inlay.default_config()
-  |> inlay.youtube(YoutubeConfig(no_cookie: False))
-  |> inlay.twitch(TwitchConfig(parent: "mysite.com"))
-  |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social", "fosstodon.org"]))
-```
-
-### Bluesky
-
-Bluesky embeds need an AT Protocol URI (`at://did:plc:.../app.bsky.feed.post/...`) to render the rich embed widget. When the post URL already contains a DID handle (e.g. `did:plc:z72i7hdynmk6r22z27h6tvur`), the embed works out of the box with the default config.
-
-For human-readable handles (e.g. `alice.bsky.social`) or custom domains (e.g. `flowvi.be`), you need to provide a `resolve_handle` function that resolves the handle to a DID.
-
-Here is an example (but your implementation may depend on whether you're targetting javascript or erlang):
-
-```gleam
-import gleam/dynamic/decode
-import gleam/httpc
-import gleam/http/request
-import gleam/json
-import gleam/option.{Some}
-import gleam/result
-import inlay.{BlueskyConfig}
-
-let resolve = fn(handle) {
-  let url =
-    "https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle="
-    <> handle
-  use req <- result.try(request.to(url) |> result.replace_error(Nil))
-  use resp <- result.try(httpc.send(req) |> result.replace_error(Nil))
-  json.parse(resp.body, decode.at(["did"], decode.string))
-  |> result.replace_error(Nil)
-}
-
-let config =
-  inlay.default_config()
-  |> inlay.bluesky(BlueskyConfig(resolve_handle: Some(resolve)))
 ```
 
 ## Development
