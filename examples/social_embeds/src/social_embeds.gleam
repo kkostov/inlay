@@ -20,6 +20,7 @@ fn inlay_config() -> inlay.Config {
   ))
   |> inlay.spotify(inlay.spotify_config())
   |> inlay.apple_music(inlay.apple_music_config())
+  |> inlay.openstreetmap(inlay.openstreetmap_config())
 }
 
 fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
@@ -92,6 +93,13 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
     )
     |> option.unwrap(element.none())
 
+  let osm_embed =
+    inlay.embed_with(
+      "https://www.openstreetmap.org/relation/19189218#map=17/50.8949/4.3416",
+      inlay_config(),
+    )
+    |> option.unwrap(element.none())
+
   html.html([], [
     html.head([], [
       html.meta([attribute.attribute("charset", "utf-8")]),
@@ -108,46 +116,50 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
         html.p([attribute.class("subtitle")], [
           element.text("Example of embedded links"),
         ]),
-        html.div([attribute.class("embed-section")], [
-          html.h2([], [element.text("Mastodon")]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("Mastodon")]),
           mastodon_embed,
         ]),
-        html.div([attribute.class("embed-section")], [
-          html.h2([], [element.text("Pixelfed")]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("Pixelfed")]),
           pixelfed_embed,
         ]),
 
-        html.div([attribute.class("embed-section")], [
-          html.h2([], [element.text("YouTube")]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("YouTube")]),
           youtube_embed,
         ]),
-        html.div([attribute.class("embed-section")], [
-          html.h2([], [element.text("Bluesky")]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("Bluesky")]),
           bluesky_embed,
         ]),
-        html.div([attribute.class("embed-section")], [
-          html.h2([], [element.text("Spotify Artist")]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("Spotify Artist")]),
           spotify_artist_embed,
         ]),
-        html.div([attribute.class("embed-section")], [
-          html.h2([], [element.text("Spotify Track")]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("Spotify Track")]),
           spotify_track_embed,
         ]),
-        html.div([attribute.class("embed-section")], [
-          html.h2([], [element.text("Spotify Playlist")]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("Spotify Playlist")]),
           spotify_playlist_embed,
         ]),
-        html.div([attribute.class("embed-section")], [
-          html.h2([], [element.text("Apple Music Artist")]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("Apple Music Artist")]),
           apple_music_artist_embed,
         ]),
-        html.div([attribute.class("embed-section")], [
-          html.h2([], [element.text("Apple Music Album")]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("Apple Music Album")]),
           apple_music_album_embed,
         ]),
-        html.div([attribute.class("embed-section")], [
-          html.h2([], [element.text("Apple Music Playlist")]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("Apple Music Playlist")]),
           apple_music_playlist_embed,
+        ]),
+        html.details([attribute.class("embed-section")], [
+          html.summary([], [element.text("OpenStreetMap")]),
+          osm_embed,
         ]),
       ]),
     ]),
@@ -183,11 +195,11 @@ p.subtitle {
   margin-bottom: 1.5rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
-.embed-section h2 {
+.embed-section summary {
   font-size: 1.1rem;
-  margin-top: 0;
   margin-bottom: 1rem;
   color: #555;
+  cursor: pointer;
 }
 .embed-section iframe {
   border-radius: 8px;
