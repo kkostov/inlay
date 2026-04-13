@@ -70,6 +70,49 @@ pub fn bluesky_config() -> BlueskyConfig {
   embed.bluesky_config()
 }
 
+pub fn youtube_config() -> YoutubeConfig {
+  embed.youtube_config()
+}
+
+pub fn vimeo_config() -> VimeoConfig {
+  embed.vimeo_config()
+}
+
+pub fn spotify_config() -> SpotifyConfig {
+  embed.spotify_config()
+}
+
+pub fn twitch_config(parent: String) -> TwitchConfig {
+  embed.twitch_config(parent)
+}
+
+pub fn openstreetmap_config() -> OpenStreetMapConfig {
+  embed.openstreetmap_config()
+}
+
+pub fn ted_config() -> TedConfig {
+  embed.ted_config()
+}
+
+pub fn soundcloud_config() -> SoundCloudConfig {
+  embed.soundcloud_config()
+}
+
+pub fn mastodon_config(servers: List(String)) -> MastodonConfig {
+  embed.mastodon_config(servers)
+}
+
+pub fn pixelfed_config(
+  servers: List(String),
+  layout: PixelfedLayout,
+) -> PixelfedConfig {
+  embed.pixelfed_config(servers, layout)
+}
+
+pub fn apple_music_config() -> AppleMusicConfig {
+  embed.apple_music_config()
+}
+
 pub fn default_config() -> Config {
   embed.default_config()
 }

@@ -1,17 +1,14 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
-import inlay/embed.{MastodonConfig, MastodonPost}
+import inlay/embed.{MastodonPost}
 import inlay/provider/mastodon
 import lustre/element
 
 fn config_with_mastodon() -> embed.Config {
   embed.Config(
     ..embed.default_config(),
-    mastodon: Some(MastodonConfig(
-      servers: ["mastodon.social", "fosstodon.org"],
-      width: None,
-    )),
+    mastodon: Some(embed.mastodon_config(["mastodon.social", "fosstodon.org"])),
   )
 }
 

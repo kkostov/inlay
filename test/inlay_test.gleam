@@ -3,9 +3,8 @@ import gleam/string
 import gleeunit
 import inlay
 import inlay/embed.{
-  BlueskyPost, Full, MastodonConfig, MastodonPost, PixelfedConfig, PixelfedPost,
-  SpotifyMedia, SpotifyTrack, TedTalk, TwitchConfig, YoutubeConfig,
-  YoutubePlaylist, YoutubeVideo,
+  BlueskyPost, Full, MastodonPost, PixelfedPost, SpotifyMedia, SpotifyTrack,
+  TedTalk, YoutubeConfig, YoutubePlaylist, YoutubeVideo,
 }
 import lustre/element
 
@@ -87,7 +86,7 @@ pub fn disabled_provider_returns_none_for_embed_test() {
 pub fn mastodon_detect_with_config_test() {
   let config =
     inlay.default_config()
-    |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"], width: None))
+    |> inlay.mastodon(inlay.mastodon_config(["mastodon.social"]))
   let assert Some(MastodonPost(
     "mastodon.social",
     "iamkonstantin",
@@ -107,10 +106,9 @@ pub fn mastodon_detect_without_config_returns_none_test() {
 pub fn pixelfed_detect_with_config_test() {
   let config =
     inlay.default_config()
-    |> inlay.pixelfed(PixelfedConfig(
-      servers: ["pixelfed.social"],
-      layout: Full(caption: True, likes: True),
-      width: None,
+    |> inlay.pixelfed(inlay.pixelfed_config(
+      ["pixelfed.social"],
+      Full(caption: True, likes: True),
     ))
   let assert Some(PixelfedPost(
     "pixelfed.social",
@@ -160,7 +158,7 @@ pub fn a_component_with_custom_fallback_test() {
 pub fn a_component_with_twitch_config_test() {
   let config =
     inlay.default_config()
-    |> inlay.twitch(TwitchConfig(parent: "mysite.com", aspect_ratio: None))
+    |> inlay.twitch(inlay.twitch_config("mysite.com"))
   let fallback = fn(href, _title, _children) { element.text(href) }
   let component = inlay.a_component_with(config, fallback)
   let el = component("https://www.twitch.tv/ninja", None, [])
@@ -180,7 +178,7 @@ pub fn new_config_detects_nothing_test() {
 pub fn new_config_with_enabled_provider_test() {
   let config =
     inlay.new()
-    |> inlay.youtube(YoutubeConfig(no_cookie: True, aspect_ratio: None))
+    |> inlay.youtube(inlay.youtube_config())
   let assert Some(YoutubeVideo("dQw4w9WgXcQ", None, None)) =
     inlay.detect_with("https://www.youtube.com/watch?v=dQw4w9WgXcQ", config)
 }
@@ -188,7 +186,7 @@ pub fn new_config_with_enabled_provider_test() {
 pub fn new_config_ignores_disabled_providers_test() {
   let config =
     inlay.new()
-    |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"], width: None))
+    |> inlay.mastodon(inlay.mastodon_config(["mastodon.social"]))
   let assert None =
     inlay.detect_with("https://www.youtube.com/watch?v=dQw4w9WgXcQ", config)
 }
@@ -196,7 +194,7 @@ pub fn new_config_ignores_disabled_providers_test() {
 pub fn new_config_mastodon_only_test() {
   let config =
     inlay.new()
-    |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"], width: None))
+    |> inlay.mastodon(inlay.mastodon_config(["mastodon.social"]))
   let assert Some(MastodonPost(
     "mastodon.social",
     "iamkonstantin",

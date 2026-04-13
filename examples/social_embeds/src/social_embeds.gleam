@@ -12,29 +12,14 @@ import lustre/element/html
 
 fn inlay_config() -> inlay.Config {
   inlay.new()
-  |> inlay.youtube(embed.YoutubeConfig(
-    no_cookie: True,
-    aspect_ratio: option.None,
+  |> inlay.youtube(inlay.youtube_config())
+  |> inlay.mastodon(inlay.mastodon_config(["mastodon.social"]))
+  |> inlay.pixelfed(inlay.pixelfed_config(
+    ["pixelfed.social"],
+    embed.Full(caption: True, likes: True),
   ))
-  |> inlay.mastodon(embed.MastodonConfig(
-    servers: ["mastodon.social"],
-    width: option.None,
-  ))
-  |> inlay.pixelfed(embed.PixelfedConfig(
-    servers: ["pixelfed.social"],
-    layout: embed.Full(caption: True, likes: True),
-    width: option.None,
-  ))
-  |> inlay.spotify(embed.SpotifyConfig(
-    width: option.None,
-    height: option.None,
-    track_height: option.None,
-  ))
-  |> inlay.apple_music(embed.AppleMusicConfig(
-    width: option.None,
-    height: option.None,
-    song_height: option.None,
-  ))
+  |> inlay.spotify(inlay.spotify_config())
+  |> inlay.apple_music(inlay.apple_music_config())
 }
 
 fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
