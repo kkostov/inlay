@@ -4,11 +4,11 @@
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/inlay/)
 
 
-Inlay is a library which renders embedded previews for social links (Mastodon, Pixelfed, YouTube, Spotify, etc..) as part of ([Blogatto](https://blogat.to/)) content or [Lustre](https://hexdocs.pm/lustre/) views.
+Inlay is a library which renders embedded previews for social links (Mastodon, Pixelfed, Apple Music, Bluesky, Spotify, etc..) as part of ([Blogatto](https://blogat.to/)) content or [Lustre](https://hexdocs.pm/lustre/) views.
 
 ## Supported providers
 
-Mastodon, Pixelfed, Bluesky, Instagram, Twitch, OpenStreetMap, SoundCloud, YouTube, Vimeo, Spotify, TED, Twitter/X, and TikTok
+Mastodon, Pixelfed, Apple Music, Bluesky, Spotify, Instagram, OpenStreetMap, SoundCloud, TED, TikTok, Twitch, Twitter/X, Vimeo, and YouTube
 
 ## Installation
 
