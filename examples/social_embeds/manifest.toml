@@ -24,7 +24,7 @@ packages = [
   { name = "gtempo", version = "7.2.4", build_tools = ["gleam"], requirements = ["gleam_regexp", "gleam_stdlib", "gleam_time"], otp_app = "gtempo", source = "hex", outer_checksum = "997964753BB7E9D9EA7023B9DB401871410D17C8ED8AC897CB9F7BFC33B277ED" },
   { name = "houdini", version = "1.2.0", build_tools = ["gleam"], requirements = [], otp_app = "houdini", source = "hex", outer_checksum = "5DB1053F1AF828049C2B206D4403C18970ABEF5C18671CA3C2D2ED0DD64F6385" },
   { name = "hpack_erl", version = "0.3.0", build_tools = ["rebar3"], requirements = [], otp_app = "hpack", source = "hex", outer_checksum = "D6137D7079169D8C485C6962DFE261AF5B9EF60FBC557344511C1E65E3D95FB0" },
-  { name = "inlay", version = "1.0.2", build_tools = ["gleam"], requirements = ["gleam_stdlib", "lustre"], source = "local", path = "../.." },
+  { name = "inlay", version = "1.0.3", build_tools = ["gleam"], requirements = ["gleam_stdlib", "lustre"], source = "local", path = "../.." },
   { name = "logging", version = "1.5.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "logging", source = "hex", outer_checksum = "BC5F18CE5DD9686100229FE5409BDC3DD5C46D5A7DF2F804AD2D8F0DD6C5060E" },
   { name = "lustre", version = "5.6.0", build_tools = ["gleam"], requirements = ["gleam_erlang", "gleam_json", "gleam_otp", "gleam_stdlib", "houdini"], otp_app = "lustre", source = "hex", outer_checksum = "EE558CD4DB9F09FCC16417ADF0183A3C2DAC3E4B21ED3AC0CAE859792AB810CA" },
   { name = "marceau", version = "1.3.0", build_tools = ["gleam"], requirements = [], otp_app = "marceau", source = "hex", outer_checksum = "2D1C27504BEF45005F5DFB18591F8610FB4BFA91744878210BDC464412EC44E9" },
