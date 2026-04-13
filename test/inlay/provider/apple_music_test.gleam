@@ -11,15 +11,23 @@ import lustre/element
 pub fn artist_url_test() {
   let assert Ok(url) =
     uri.parse("https://music.apple.com/be/artist/evanescence/42102393")
-  let assert Some(AppleMusicMedia(AppleMusicArtist, "be", "evanescence", "42102393")) =
-    apple_music.detect(url)
+  let assert Some(AppleMusicMedia(
+    AppleMusicArtist,
+    "be",
+    "evanescence",
+    "42102393",
+  )) = apple_music.detect(url)
 }
 
 pub fn album_url_test() {
   let assert Ok(url) =
     uri.parse("https://music.apple.com/be/album/bleed-out/1699386566")
-  let assert Some(AppleMusicMedia(AppleMusicAlbum, "be", "bleed-out", "1699386566")) =
-    apple_music.detect(url)
+  let assert Some(AppleMusicMedia(
+    AppleMusicAlbum,
+    "be",
+    "bleed-out",
+    "1699386566",
+  )) = apple_music.detect(url)
 }
 
 pub fn playlist_url_test() {
@@ -50,9 +58,7 @@ pub fn song_url_test() {
 
 pub fn music_video_url_test() {
   let assert Ok(url) =
-    uri.parse(
-      "https://music.apple.com/us/music-video/going-under/1440833272",
-    )
+    uri.parse("https://music.apple.com/us/music-video/going-under/1440833272")
   let assert Some(AppleMusicMedia(
     AppleMusicMusicVideo,
     "us",
@@ -62,20 +68,17 @@ pub fn music_video_url_test() {
 }
 
 pub fn wrong_host_returns_none_test() {
-  let assert Ok(url) =
-    uri.parse("https://open.spotify.com/track/abc")
+  let assert Ok(url) = uri.parse("https://open.spotify.com/track/abc")
   let assert None = apple_music.detect(url)
 }
 
 pub fn missing_segments_returns_none_test() {
-  let assert Ok(url) =
-    uri.parse("https://music.apple.com/us")
+  let assert Ok(url) = uri.parse("https://music.apple.com/us")
   let assert None = apple_music.detect(url)
 }
 
 pub fn invalid_path_returns_none_test() {
-  let assert Ok(url) =
-    uri.parse("https://music.apple.com/us/unknown/foo/123")
+  let assert Ok(url) = uri.parse("https://music.apple.com/us/unknown/foo/123")
   let assert None = apple_music.detect(url)
 }
 
@@ -101,9 +104,11 @@ pub fn render_album_test() {
 }
 
 pub fn render_artist_test() {
-  let e =
-    AppleMusicMedia(AppleMusicArtist, "be", "evanescence", "42102393")
+  let e = AppleMusicMedia(AppleMusicArtist, "be", "evanescence", "42102393")
   let html = element.to_string(apple_music.render(e, embed.default_config()))
   let assert True =
-    string.contains(html, "embed.music.apple.com/be/artist/evanescence/42102393")
+    string.contains(
+      html,
+      "embed.music.apple.com/be/artist/evanescence/42102393",
+    )
 }
