@@ -117,12 +117,18 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
           element.text("Example of embedded links"),
           element.text(" · "),
           html.a(
-            [attribute.href("https://hex.pm/packages/inlay"), attribute.target("_blank")],
+            [
+              attribute.href("https://hex.pm/packages/inlay"),
+              attribute.target("_blank"),
+            ],
             [element.text("Hex")],
           ),
           element.text(" · "),
           html.a(
-            [attribute.href("https://github.com/kkostov/inlay"), attribute.target("_blank")],
+            [
+              attribute.href("https://github.com/kkostov/inlay"),
+              attribute.target("_blank"),
+            ],
             [element.text("GitHub")],
           ),
         ]),
