@@ -1,17 +1,16 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
-import inlay/embed.{Compact, Full, PixelfedConfig, PixelfedPost}
+import inlay/embed.{Compact, Full, PixelfedPost}
 import inlay/provider/pixelfed
 import lustre/element
 
 fn config_with_pixelfed() -> embed.Config {
   embed.Config(
     ..embed.default_config(),
-    pixelfed: Some(PixelfedConfig(
-      servers: ["pixelfed.social", "pixelfed.de"],
-      layout: Full(caption: True, likes: True),
-      width: None,
+    pixelfed: Some(embed.pixelfed_config(
+      ["pixelfed.social", "pixelfed.de"],
+      Full(caption: True, likes: True),
     )),
   )
 }
@@ -19,11 +18,7 @@ fn config_with_pixelfed() -> embed.Config {
 fn config_with_pixelfed_compact() -> embed.Config {
   embed.Config(
     ..embed.default_config(),
-    pixelfed: Some(PixelfedConfig(
-      servers: ["pixelfed.social"],
-      layout: Compact,
-      width: None,
-    )),
+    pixelfed: Some(embed.pixelfed_config(["pixelfed.social"], Compact)),
   )
 }
 
@@ -95,10 +90,9 @@ pub fn render_script_tag_uses_correct_server_test() {
   let config =
     embed.Config(
       ..embed.default_config(),
-      pixelfed: Some(PixelfedConfig(
-        servers: ["pixelfed.de"],
-        layout: Full(caption: True, likes: True),
-        width: None,
+      pixelfed: Some(embed.pixelfed_config(
+        ["pixelfed.de"],
+        Full(caption: True, likes: True),
       )),
     )
   let e = PixelfedPost("pixelfed.de", "fotograf", "788060252604363209")

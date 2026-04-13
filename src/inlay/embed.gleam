@@ -143,26 +143,65 @@ pub fn bluesky_config() -> BlueskyConfig {
   BlueskyConfig(resolve_handle: None)
 }
 
+pub fn youtube_config() -> YoutubeConfig {
+  YoutubeConfig(no_cookie: True, aspect_ratio: None)
+}
+
+pub fn vimeo_config() -> VimeoConfig {
+  VimeoConfig(dnt: True, aspect_ratio: None)
+}
+
+pub fn spotify_config() -> SpotifyConfig {
+  SpotifyConfig(width: None, height: None, track_height: None)
+}
+
+pub fn twitch_config(parent: String) -> TwitchConfig {
+  TwitchConfig(parent: parent, aspect_ratio: None)
+}
+
+pub fn openstreetmap_config() -> OpenStreetMapConfig {
+  OpenStreetMapConfig(aspect_ratio: None)
+}
+
+pub fn ted_config() -> TedConfig {
+  TedConfig(aspect_ratio: None)
+}
+
+pub fn soundcloud_config() -> SoundCloudConfig {
+  SoundCloudConfig(width: None, height: None)
+}
+
+pub fn mastodon_config(servers: List(String)) -> MastodonConfig {
+  MastodonConfig(servers: servers, width: None)
+}
+
+pub fn pixelfed_config(
+  servers: List(String),
+  layout: PixelfedLayout,
+) -> PixelfedConfig {
+  PixelfedConfig(servers: servers, layout: layout, width: None)
+}
+
+pub fn apple_music_config() -> AppleMusicConfig {
+  AppleMusicConfig(width: None, height: None, song_height: None)
+}
+
 pub fn default_config() -> Config {
   Config(
-    youtube: Some(YoutubeConfig(no_cookie: True, aspect_ratio: None)),
-    vimeo: Some(VimeoConfig(dnt: True, aspect_ratio: None)),
-    spotify: Some(SpotifyConfig(width: None, height: None, track_height: None)),
+    youtube: Some(youtube_config()),
+    vimeo: Some(vimeo_config()),
+    spotify: Some(spotify_config()),
     twitter: Some(TwitterConfig),
     tiktok: Some(TikTokConfig),
-    bluesky: Some(BlueskyConfig(resolve_handle: None)),
+    bluesky: Some(bluesky_config()),
     instagram: Some(InstagramConfig),
     twitch: None,
-    openstreetmap: Some(OpenStreetMapConfig(aspect_ratio: None)),
-    ted: Some(TedConfig(aspect_ratio: None)),
-    soundcloud: Some(SoundCloudConfig(width: None, height: None)),
+    openstreetmap: Some(openstreetmap_config()),
+    ted: Some(ted_config()),
+    soundcloud: Some(soundcloud_config()),
     mastodon: None,
     pixelfed: None,
-    apple_music: Some(AppleMusicConfig(
-      width: None,
-      height: None,
-      song_height: None,
-    )),
+    apple_music: Some(apple_music_config()),
   )
 }
 
