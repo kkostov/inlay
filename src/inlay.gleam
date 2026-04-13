@@ -60,6 +60,10 @@ pub type PixelfedConfig =
 pub type PixelfedLayout =
   embed.PixelfedLayout
 
+pub fn bluesky_config() -> BlueskyConfig {
+  embed.bluesky_config()
+}
+
 pub fn default_config() -> Config {
   embed.default_config()
 }

@@ -160,6 +160,38 @@ let config =
   |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social", "fosstodon.org"]))
 ```
 
+### Bluesky
+
+Bluesky embeds need an AT Protocol URI (`at://did:plc:.../app.bsky.feed.post/...`) to render the rich embed widget. When the post URL already contains a DID handle (e.g. `did:plc:z72i7hdynmk6r22z27h6tvur`), the embed works out of the box with the default config.
+
+For human-readable handles (e.g. `alice.bsky.social`) or custom domains (e.g. `flowvi.be`), you need to provide a `resolve_handle` function that resolves the handle to a DID.
+
+Here is an example (but your implementation may depend on whether you're targetting javascript or erlang):
+
+```gleam
+import gleam/dynamic/decode
+import gleam/httpc
+import gleam/http/request
+import gleam/json
+import gleam/option.{Some}
+import gleam/result
+import inlay.{BlueskyConfig}
+
+let resolve = fn(handle) {
+  let url =
+    "https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle="
+    <> handle
+  use req <- result.try(request.to(url) |> result.replace_error(Nil))
+  use resp <- result.try(httpc.send(req) |> result.replace_error(Nil))
+  json.parse(resp.body, decode.at(["did"], decode.string))
+  |> result.replace_error(Nil)
+}
+
+let config =
+  inlay.default_config()
+  |> inlay.bluesky(BlueskyConfig(resolve_handle: Some(resolve)))
+```
+
 ## Development
 
 ```sh

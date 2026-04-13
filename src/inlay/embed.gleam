@@ -77,7 +77,7 @@ pub type TikTokConfig {
 }
 
 pub type BlueskyConfig {
-  BlueskyConfig
+  BlueskyConfig(resolve_handle: Option(fn(String) -> Result(String, Nil)))
 }
 
 pub type InstagramConfig {
@@ -108,6 +108,10 @@ pub type PixelfedConfig {
   PixelfedConfig(servers: List(String), layout: PixelfedLayout)
 }
 
+pub fn bluesky_config() -> BlueskyConfig {
+  BlueskyConfig(resolve_handle: None)
+}
+
 pub fn default_config() -> Config {
   Config(
     youtube: Some(YoutubeConfig(no_cookie: True)),
@@ -115,7 +119,7 @@ pub fn default_config() -> Config {
     spotify: Some(SpotifyConfig),
     twitter: Some(TwitterConfig),
     tiktok: Some(TikTokConfig),
-    bluesky: Some(BlueskyConfig),
+    bluesky: Some(BlueskyConfig(resolve_handle: None)),
     instagram: Some(InstagramConfig),
     twitch: None,
     openstreetmap: Some(OpenStreetMapConfig),
