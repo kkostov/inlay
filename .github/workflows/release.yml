@@ -3,8 +3,8 @@ name: release
 # based on https://github.com/lustre-labs/lustre/blob/main/.github/workflows/release.yml
 
 on:
-  push:
-    tags: ["v*"]
+  release:
+    types: [released, prereleased]
 
 jobs:
   publish:
@@ -37,5 +37,3 @@ jobs:
       - run: gleam publish -y
         env:
           HEXPM_API_KEY: ${{ secrets.HEXPM_API_KEY }}
-
-      - uses: softprops/action-gh-release@v3
