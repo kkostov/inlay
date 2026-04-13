@@ -6,6 +6,8 @@
 
 Inlay is a library which renders embedded previews for social links (Mastodon, Pixelfed, Apple Music, Bluesky, Spotify, etc..) as part of ([Blogatto](https://blogat.to/)) content or [Lustre](https://hexdocs.pm/lustre/) views.
 
+There is a [demo website](https://inlay.statichost.page) where you can preview some of the integrations.
+
 ## Supported providers
 
 Mastodon, Pixelfed, Apple Music, Bluesky, Spotify, Instagram, OpenStreetMap, SoundCloud, TED, TikTok, Twitch, Twitter/X, Vimeo, and YouTube
