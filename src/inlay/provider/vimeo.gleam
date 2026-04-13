@@ -17,7 +17,7 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
     VimeoVideo(id, privacy_hash) -> {
       let base = "https://player.vimeo.com/video/" <> id
       let dnt = case config.vimeo {
-        Some(embed.VimeoConfig(dnt: True)) -> True
+        Some(embed.VimeoConfig(dnt: True, ..)) -> True
         _ -> False
       }
       let params = case dnt, privacy_hash {
@@ -27,7 +27,11 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
         False, None -> ""
       }
       let src = base <> params
-      iframe.responsive(src, "56.25%", [
+      let aspect_ratio = case config.vimeo {
+        Some(embed.VimeoConfig(aspect_ratio: Some(r), ..)) -> r
+        _ -> "56.25%"
+      }
+      iframe.responsive(src, aspect_ratio, [
         attribute.attribute("allowfullscreen", "true"),
         attribute.attribute("allow", "autoplay; fullscreen; picture-in-picture"),
       ])

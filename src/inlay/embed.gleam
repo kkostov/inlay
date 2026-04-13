@@ -16,6 +16,20 @@ pub type Embed {
   SoundCloudTrack(path: String)
   MastodonPost(server: String, user: String, id: String)
   PixelfedPost(server: String, user: String, id: String)
+  AppleMusicMedia(
+    media_type: AppleMusicMediaType,
+    country: String,
+    slug: String,
+    id: String,
+  )
+}
+
+pub type AppleMusicMediaType {
+  AppleMusicAlbum
+  AppleMusicArtist
+  AppleMusicPlaylist
+  AppleMusicSong(track_id: String)
+  AppleMusicMusicVideo
 }
 
 pub type SpotifyMediaType {
@@ -53,19 +67,24 @@ pub type Config {
     soundcloud: Option(SoundCloudConfig),
     mastodon: Option(MastodonConfig),
     pixelfed: Option(PixelfedConfig),
+    apple_music: Option(AppleMusicConfig),
   )
 }
 
 pub type YoutubeConfig {
-  YoutubeConfig(no_cookie: Bool)
+  YoutubeConfig(no_cookie: Bool, aspect_ratio: Option(String))
 }
 
 pub type VimeoConfig {
-  VimeoConfig(dnt: Bool)
+  VimeoConfig(dnt: Bool, aspect_ratio: Option(String))
 }
 
 pub type SpotifyConfig {
-  SpotifyConfig
+  SpotifyConfig(
+    width: Option(Int),
+    height: Option(Int),
+    track_height: Option(Int),
+  )
 }
 
 pub type TwitterConfig {
@@ -85,27 +104,39 @@ pub type InstagramConfig {
 }
 
 pub type TwitchConfig {
-  TwitchConfig(parent: String)
+  TwitchConfig(parent: String, aspect_ratio: Option(String))
 }
 
 pub type OpenStreetMapConfig {
-  OpenStreetMapConfig
+  OpenStreetMapConfig(aspect_ratio: Option(String))
 }
 
 pub type TedConfig {
-  TedConfig
+  TedConfig(aspect_ratio: Option(String))
 }
 
 pub type SoundCloudConfig {
-  SoundCloudConfig
+  SoundCloudConfig(width: Option(Int), height: Option(Int))
 }
 
 pub type MastodonConfig {
-  MastodonConfig(servers: List(String))
+  MastodonConfig(servers: List(String), width: Option(Int))
 }
 
 pub type PixelfedConfig {
-  PixelfedConfig(servers: List(String), layout: PixelfedLayout)
+  PixelfedConfig(
+    servers: List(String),
+    layout: PixelfedLayout,
+    width: Option(Int),
+  )
+}
+
+pub type AppleMusicConfig {
+  AppleMusicConfig(
+    width: Option(Int),
+    height: Option(Int),
+    song_height: Option(Int),
+  )
 }
 
 pub fn bluesky_config() -> BlueskyConfig {
@@ -114,19 +145,24 @@ pub fn bluesky_config() -> BlueskyConfig {
 
 pub fn default_config() -> Config {
   Config(
-    youtube: Some(YoutubeConfig(no_cookie: True)),
-    vimeo: Some(VimeoConfig(dnt: True)),
-    spotify: Some(SpotifyConfig),
+    youtube: Some(YoutubeConfig(no_cookie: True, aspect_ratio: None)),
+    vimeo: Some(VimeoConfig(dnt: True, aspect_ratio: None)),
+    spotify: Some(SpotifyConfig(width: None, height: None, track_height: None)),
     twitter: Some(TwitterConfig),
     tiktok: Some(TikTokConfig),
     bluesky: Some(BlueskyConfig(resolve_handle: None)),
     instagram: Some(InstagramConfig),
     twitch: None,
-    openstreetmap: Some(OpenStreetMapConfig),
-    ted: Some(TedConfig),
-    soundcloud: Some(SoundCloudConfig),
+    openstreetmap: Some(OpenStreetMapConfig(aspect_ratio: None)),
+    ted: Some(TedConfig(aspect_ratio: None)),
+    soundcloud: Some(SoundCloudConfig(width: None, height: None)),
     mastodon: None,
     pixelfed: None,
+    apple_music: Some(AppleMusicConfig(
+      width: None,
+      height: None,
+      song_height: None,
+    )),
   )
 }
 
@@ -145,5 +181,6 @@ pub fn new() -> Config {
     soundcloud: None,
     mastodon: None,
     pixelfed: None,
+    apple_music: None,
   )
 }

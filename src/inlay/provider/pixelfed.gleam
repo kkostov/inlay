@@ -40,6 +40,10 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
       let caption_str = bool_to_string(caption)
       let likes_str = bool_to_string(likes)
       let layout_str = layout_to_string(layout)
+      let width = case config.pixelfed {
+        Some(embed.PixelfedConfig(width: w, ..)) -> option.unwrap(w, 400)
+        None -> 400
+      }
       let src =
         "https://"
         <> server
@@ -59,7 +63,7 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
           attribute.src(src),
           attribute.class("pixelfed__embed"),
           attribute.styles([#("max-width", "100%"), #("border", "0")]),
-          attribute.width(400),
+          attribute.width(width),
           attribute.attribute("allowfullscreen", "allowfullscreen"),
         ]),
         html.script(

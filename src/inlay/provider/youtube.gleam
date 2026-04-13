@@ -19,7 +19,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
 
 pub fn render(embed: Embed, config: Config) -> Element(msg) {
   let domain = case config.youtube {
-    Some(embed.YoutubeConfig(no_cookie: True)) ->
+    Some(embed.YoutubeConfig(no_cookie: True, ..)) ->
       "https://www.youtube-nocookie.com"
     _ -> "https://www.youtube.com"
   }
@@ -39,7 +39,12 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
     _ -> panic as "unreachable"
   }
 
-  iframe.responsive(src, "56.25%", [
+  let aspect_ratio = case config.youtube {
+    Some(embed.YoutubeConfig(aspect_ratio: Some(r), ..)) -> r
+    _ -> "56.25%"
+  }
+
+  iframe.responsive(src, aspect_ratio, [
     attribute.attribute("allowfullscreen", "true"),
     attribute.attribute(
       "allow",

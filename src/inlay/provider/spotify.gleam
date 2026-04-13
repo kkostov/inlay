@@ -16,14 +16,22 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, _config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Element(msg) {
   case embed {
     SpotifyMedia(media_type, id) -> {
       let type_str = media_type_to_string(media_type)
       let src = "https://open.spotify.com/embed/" <> type_str <> "/" <> id
+      let #(width, track_height, other_height) = case config.spotify {
+        Some(embed.SpotifyConfig(w, h, th)) -> #(
+          option.unwrap(w, 300),
+          option.unwrap(th, 152),
+          option.unwrap(h, 352),
+        )
+        None -> #(300, 152, 352)
+      }
       let height = case media_type {
-        SpotifyTrack -> 152
-        _ -> 352
+        SpotifyTrack -> track_height
+        _ -> other_height
       }
       html.div(
         [
@@ -35,7 +43,7 @@ pub fn render(embed: Embed, _config: Config) -> Element(msg) {
         [
           html.iframe([
             attribute.src(src),
-            attribute.width(300),
+            attribute.width(width),
             attribute.height(height),
             attribute.attribute("frameborder", "0"),
             attribute.attribute(

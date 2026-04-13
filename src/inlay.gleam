@@ -60,6 +60,12 @@ pub type PixelfedConfig =
 pub type PixelfedLayout =
   embed.PixelfedLayout
 
+pub type AppleMusicConfig =
+  embed.AppleMusicConfig
+
+pub type AppleMusicMediaType =
+  embed.AppleMusicMediaType
+
 pub fn bluesky_config() -> BlueskyConfig {
   embed.bluesky_config()
 }
@@ -174,6 +180,17 @@ pub fn pixelfed(config: Config, pixelfed_config: PixelfedConfig) -> Config {
 
 pub fn no_pixelfed(config: Config) -> Config {
   Config(..config, pixelfed: None)
+}
+
+pub fn apple_music(
+  config: Config,
+  apple_music_config: AppleMusicConfig,
+) -> Config {
+  Config(..config, apple_music: Some(apple_music_config))
+}
+
+pub fn no_apple_music(config: Config) -> Config {
+  Config(..config, apple_music: None)
 }
 
 pub fn detect(url: String) -> Option(Embed) {

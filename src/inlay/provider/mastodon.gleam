@@ -9,7 +9,7 @@ import lustre/element/html
 
 pub fn detect(url: Uri, config: Config) -> Option(Embed) {
   case config.mastodon {
-    Some(embed.MastodonConfig(servers: servers)) ->
+    Some(embed.MastodonConfig(servers: servers, ..)) ->
       case url.host {
         Some(host) ->
           case list.contains(servers, host) {
@@ -22,19 +22,26 @@ pub fn detect(url: Uri, config: Config) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, _config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Element(msg) {
   case embed {
     MastodonPost(server, user, id) -> {
+      let width = case config.mastodon {
+        Some(embed.MastodonConfig(width: w, ..)) -> option.unwrap(w, 400)
+        None -> 400
+      }
       let src = "https://" <> server <> "/@" <> user <> "/" <> id <> "/embed"
       html.div([], [
         html.iframe([
           attribute.src(src),
           attribute.class("mastodon-embed"),
           attribute.styles([#("max-width", "100%"), #("border", "0")]),
-          attribute.width(400),
+          attribute.width(width),
           attribute.attribute("allowfullscreen", "true"),
           attribute.attribute("loading", "lazy"),
-          attribute.attribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"),
+          attribute.attribute(
+            "sandbox",
+            "allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox",
+          ),
         ]),
         html.script(
           [

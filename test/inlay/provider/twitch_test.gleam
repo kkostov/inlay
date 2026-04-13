@@ -29,7 +29,7 @@ pub fn render_channel_with_parent_test() {
   let config =
     embed.Config(
       ..embed.default_config(),
-      twitch: Some(TwitchConfig(parent: "mysite.com")),
+      twitch: Some(TwitchConfig(parent: "mysite.com", aspect_ratio: None)),
     )
   let e = TwitchChannel("ninja")
   let html = element.to_string(twitch.render(e, config))
@@ -41,7 +41,7 @@ pub fn render_video_with_parent_test() {
   let config =
     embed.Config(
       ..embed.default_config(),
-      twitch: Some(TwitchConfig(parent: "mysite.com")),
+      twitch: Some(TwitchConfig(parent: "mysite.com", aspect_ratio: None)),
     )
   let e = TwitchVideo("123456789")
   let html = element.to_string(twitch.render(e, config))

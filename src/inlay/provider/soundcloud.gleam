@@ -13,16 +13,23 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, _config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Element(msg) {
   case embed {
     SoundCloudTrack(path) -> {
+      let #(width, height) = case config.soundcloud {
+        Some(embed.SoundCloudConfig(w, h)) -> #(
+          option.unwrap(w, 300),
+          option.unwrap(h, 166),
+        )
+        None -> #(300, 166)
+      }
       let encoded_url = uri.percent_encode("https://soundcloud.com" <> path)
       let src = "https://w.soundcloud.com/player/?url=" <> encoded_url
       html.div([], [
         html.iframe([
           attribute.src(src),
-          attribute.width(300),
-          attribute.height(166),
+          attribute.width(width),
+          attribute.height(height),
           attribute.attribute("frameborder", "0"),
           attribute.attribute("allow", "autoplay"),
           attribute.attribute("loading", "lazy"),

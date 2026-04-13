@@ -50,7 +50,7 @@ pub fn render_vimeo_without_dnt_test() {
   let config =
     embed.Config(
       ..embed.default_config(),
-      vimeo: Some(embed.VimeoConfig(dnt: False)),
+      vimeo: Some(embed.VimeoConfig(dnt: False, aspect_ratio: None)),
     )
   let e = VimeoVideo("76979871", None)
   let html = element.to_string(vimeo.render(e, config))

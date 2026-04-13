@@ -14,7 +14,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
 
 pub fn render(embed: Embed, config: Config) -> Element(msg) {
   let parent = case config.twitch {
-    Some(embed.TwitchConfig(parent: p)) -> p
+    Some(embed.TwitchConfig(parent: p, ..)) -> p
     None -> "localhost"
   }
 
@@ -26,7 +26,12 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
     _ -> panic as "unreachable"
   }
 
-  iframe.responsive(src, "56.25%", [
+  let aspect_ratio = case config.twitch {
+    Some(embed.TwitchConfig(aspect_ratio: Some(r), ..)) -> r
+    _ -> "56.25%"
+  }
+
+  iframe.responsive(src, aspect_ratio, [
     attribute.attribute("allowfullscreen", "true"),
   ])
 }

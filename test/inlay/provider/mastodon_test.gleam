@@ -8,9 +8,10 @@ import lustre/element
 fn config_with_mastodon() -> embed.Config {
   embed.Config(
     ..embed.default_config(),
-    mastodon: Some(
-      MastodonConfig(servers: ["mastodon.social", "fosstodon.org"]),
-    ),
+    mastodon: Some(MastodonConfig(
+      servers: ["mastodon.social", "fosstodon.org"],
+      width: None,
+    )),
   )
 }
 

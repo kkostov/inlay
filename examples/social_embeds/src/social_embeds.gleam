@@ -12,13 +12,29 @@ import lustre/element/html
 
 fn inlay_config() -> inlay.Config {
   inlay.new()
-  |> inlay.youtube(embed.YoutubeConfig(no_cookie: True))
-  |> inlay.mastodon(embed.MastodonConfig(servers: ["mastodon.social"]))
+  |> inlay.youtube(embed.YoutubeConfig(
+    no_cookie: True,
+    aspect_ratio: option.None,
+  ))
+  |> inlay.mastodon(embed.MastodonConfig(
+    servers: ["mastodon.social"],
+    width: option.None,
+  ))
   |> inlay.pixelfed(embed.PixelfedConfig(
     servers: ["pixelfed.social"],
     layout: embed.Full(caption: True, likes: True),
+    width: option.None,
   ))
-  |> inlay.spotify(embed.SpotifyConfig)
+  |> inlay.spotify(embed.SpotifyConfig(
+    width: option.None,
+    height: option.None,
+    track_height: option.None,
+  ))
+  |> inlay.apple_music(embed.AppleMusicConfig(
+    width: option.None,
+    height: option.None,
+    song_height: option.None,
+  ))
 }
 
 fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
@@ -44,7 +60,9 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
     |> option.unwrap(element.none())
 
   let bluesky_embed =
-    inlay.embed("https://bsky.app/profile/did:plc:bwm3ipmp7fidz67iy4atioa5/post/3max7rufmvp2y")
+    inlay.embed(
+      "https://bsky.app/profile/did:plc:bwm3ipmp7fidz67iy4atioa5/post/3max7rufmvp2y",
+    )
     |> option.unwrap(element.none())
 
   let spotify_artist_embed =
@@ -64,6 +82,27 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
   let spotify_playlist_embed =
     inlay.embed_with(
       "https://open.spotify.com/playlist/3jsMM3KminuLxYCFy6PKFu?si=Gsighi56SB6HmtDrO3vI-w",
+      inlay_config(),
+    )
+    |> option.unwrap(element.none())
+
+  let apple_music_artist_embed =
+    inlay.embed_with(
+      "https://music.apple.com/be/artist/evanescence/42102393",
+      inlay_config(),
+    )
+    |> option.unwrap(element.none())
+
+  let apple_music_album_embed =
+    inlay.embed_with(
+      "https://music.apple.com/be/album/bleed-out/1699386566",
+      inlay_config(),
+    )
+    |> option.unwrap(element.none())
+
+  let apple_music_playlist_embed =
+    inlay.embed_with(
+      "https://music.apple.com/be/playlist/ramin-djawadi-essentials/pl.ac83e6e212d5400198f4c8c2110a2af1",
       inlay_config(),
     )
     |> option.unwrap(element.none())
@@ -112,6 +151,18 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
         html.div([attribute.class("embed-section")], [
           html.h2([], [element.text("Spotify Playlist")]),
           spotify_playlist_embed,
+        ]),
+        html.div([attribute.class("embed-section")], [
+          html.h2([], [element.text("Apple Music Artist")]),
+          apple_music_artist_embed,
+        ]),
+        html.div([attribute.class("embed-section")], [
+          html.h2([], [element.text("Apple Music Album")]),
+          apple_music_album_embed,
+        ]),
+        html.div([attribute.class("embed-section")], [
+          html.h2([], [element.text("Apple Music Playlist")]),
+          apple_music_playlist_embed,
         ]),
       ]),
     ]),

@@ -121,7 +121,7 @@ pub fn render_video_cookie_domain_test() {
   let config =
     embed.Config(
       ..embed.default_config(),
-      youtube: Some(embed.YoutubeConfig(no_cookie: False)),
+      youtube: Some(embed.YoutubeConfig(no_cookie: False, aspect_ratio: None)),
     )
   let e = YoutubeVideo("test123", None, None)
   let html = element.to_string(youtube.render(e, config))
