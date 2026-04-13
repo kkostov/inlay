@@ -115,6 +115,16 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
         html.h1([], [element.text("Inlay - render embedded links")]),
         html.p([attribute.class("subtitle")], [
           element.text("Example of embedded links"),
+          element.text(" · "),
+          html.a(
+            [attribute.href("https://hex.pm/packages/inlay"), attribute.target("_blank")],
+            [element.text("Hex")],
+          ),
+          element.text(" · "),
+          html.a(
+            [attribute.href("https://github.com/kkostov/inlay"), attribute.target("_blank")],
+            [element.text("GitHub")],
+          ),
         ]),
         html.details([attribute.class("embed-section")], [
           html.summary([], [element.text("Mastodon")]),
