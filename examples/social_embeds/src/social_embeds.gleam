@@ -18,6 +18,7 @@ fn inlay_config() -> inlay.Config {
     servers: ["pixelfed.social"],
     layout: embed.Full(caption: True, likes: True),
   ))
+  |> inlay.spotify(embed.SpotifyConfig)
 }
 
 fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
@@ -44,6 +45,27 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
 
   let bluesky_embed =
     inlay.embed("https://bsky.app/profile/did:plc:bwm3ipmp7fidz67iy4atioa5/post/3max7rufmvp2y")
+    |> option.unwrap(element.none())
+
+  let spotify_artist_embed =
+    inlay.embed_with(
+      "https://open.spotify.com/artist/7GyhmlEy51sGUE09A5AWzc?si=Thh-F4JSTCmx3I5D5Ofljw",
+      inlay_config(),
+    )
+    |> option.unwrap(element.none())
+
+  let spotify_track_embed =
+    inlay.embed_with(
+      "https://open.spotify.com/track/6dgOGIJjlUDGD7hJ0CbIJI?si=a7e23bbaf33b4b14",
+      inlay_config(),
+    )
+    |> option.unwrap(element.none())
+
+  let spotify_playlist_embed =
+    inlay.embed_with(
+      "https://open.spotify.com/playlist/3jsMM3KminuLxYCFy6PKFu?si=Gsighi56SB6HmtDrO3vI-w",
+      inlay_config(),
+    )
     |> option.unwrap(element.none())
 
   html.html([], [
@@ -78,6 +100,18 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
         html.div([attribute.class("embed-section")], [
           html.h2([], [element.text("Bluesky")]),
           bluesky_embed,
+        ]),
+        html.div([attribute.class("embed-section")], [
+          html.h2([], [element.text("Spotify Artist")]),
+          spotify_artist_embed,
+        ]),
+        html.div([attribute.class("embed-section")], [
+          html.h2([], [element.text("Spotify Track")]),
+          spotify_track_embed,
+        ]),
+        html.div([attribute.class("embed-section")], [
+          html.h2([], [element.text("Spotify Playlist")]),
+          spotify_playlist_embed,
         ]),
       ]),
     ]),
