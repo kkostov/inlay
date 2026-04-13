@@ -1,5 +1,5 @@
 name = "inlay"
-version = "1.0.2"
+version = "1.0.3"
 
 description = "Embed links in Lustre views and Blogatto markdown"
 licences = ["MIT"]
