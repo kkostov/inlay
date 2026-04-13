@@ -3,6 +3,7 @@ name: release
 # based on https://github.com/lustre-labs/lustre/blob/main/.github/workflows/release.yml
 
 on:
+  workflow_dispatch:
   release:
     types: [released, prereleased]
 
