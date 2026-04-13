@@ -47,12 +47,12 @@ type BoundingBox {
 
 fn bounding_box(lat: Float, long: Float, zoom: Int) -> BoundingBox {
   let offset = 360.0 /. pow(2.0, int.to_float(zoom))
-  let lat_offset = offset /. cos_deg(lat)
+  let lon_offset = offset /. cos_deg(lat)
   BoundingBox(
-    min_lat: lat -. lat_offset,
-    min_long: long -. offset,
-    max_lat: lat +. lat_offset,
-    max_long: long +. offset,
+    min_lat: lat -. offset,
+    min_long: long -. lon_offset,
+    max_lat: lat +. offset,
+    max_long: long +. lon_offset,
   )
 }
 
