@@ -17,7 +17,7 @@ pub fn detect(url: Uri, config: embed.PixelfedConfig) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
   case embed {
     PixelfedPost(server, user, id) -> {
       let #(caption, likes, layout, width) = case config.pixelfed {
@@ -50,7 +50,7 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
         <> likes_str
         <> "&layout="
         <> layout_str
-      html.div([], [
+      Ok(html.div([], [
         html.iframe([
           attribute.attribute("title", "Pixelfed Post Embed"),
           attribute.src(src),
@@ -67,9 +67,9 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
           ],
           "",
         ),
-      ])
+      ]))
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

@@ -14,7 +14,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
   case embed {
     MapLocation(zoom, lat, long) -> {
       let bbox = bounding_box(lat, long, zoom)
@@ -35,9 +35,9 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
         Some(embed.OpenStreetMapConfig(aspect_ratio: Some(r))) -> r
         _ -> "75%"
       }
-      iframe.responsive(src, aspect_ratio, [])
+      Ok(iframe.responsive(src, aspect_ratio, []))
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

@@ -31,7 +31,8 @@ pub fn non_ted_url_returns_none_test() {
 
 pub fn render_ted_talk_test() {
   let e = TedTalk("simon_sinek_how_great_leaders_inspire_action")
-  let html = element.to_string(ted.render(e, embed.default_config()))
+  let assert Ok(el) = ted.render(e, embed.default_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(
       html,

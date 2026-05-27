@@ -35,7 +35,8 @@ pub fn non_osm_url_returns_none_test() {
 
 pub fn render_brussels_atomium_test() {
   let e = MapLocation(17, 50.8949, 4.3416)
-  let html = element.to_string(openstreetmap.render(e, embed.default_config()))
+  let assert Ok(el) = openstreetmap.render(e, embed.default_config())
+  let html = element.to_string(el)
   let assert True = string.contains(html, "openstreetmap.org/export/embed.html")
   let assert True = string.contains(html, "bbox=")
   let assert True = string.contains(html, "marker=")
@@ -43,7 +44,8 @@ pub fn render_brussels_atomium_test() {
 
 pub fn bounding_box_axis_correction_test() {
   let e = MapLocation(17, 50.8949, 4.3416)
-  let html = element.to_string(openstreetmap.render(e, embed.default_config()))
+  let assert Ok(el) = openstreetmap.render(e, embed.default_config())
+  let html = element.to_string(el)
 
   let assert Ok(#(_, after_bbox)) = string.split_once(html, "bbox=")
   let assert Ok(#(bbox_str, _)) = string.split_once(after_bbox, "&")

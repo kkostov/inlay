@@ -16,7 +16,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
   case embed {
     SpotifyMedia(media_type, id) -> {
       let type_str = media_type_to_string(media_type)
@@ -37,7 +37,7 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
         | SpotifyEpisode
         | SpotifyShow -> other_height
       }
-      html.div(
+      Ok(html.div(
         [
           attribute.styles([
             #("border-radius", "12px"),
@@ -57,9 +57,9 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
             attribute.attribute("loading", "lazy"),
           ]),
         ],
-      )
+      ))
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

@@ -31,7 +31,8 @@ pub fn non_soundcloud_url_returns_none_test() {
 
 pub fn render_soundcloud_test() {
   let e = SoundCloudTrack("/artist-name/track-name")
-  let html = element.to_string(soundcloud.render(e, embed.default_config()))
+  let assert Ok(el) = soundcloud.render(e, embed.default_config())
+  let html = element.to_string(el)
   let assert True = string.contains(html, "w.soundcloud.com/player/")
   let assert True = string.contains(html, "soundcloud.com")
 }

@@ -32,7 +32,8 @@ pub fn render_channel_with_parent_test() {
       twitch: Some(embed.twitch_config("mysite.com")),
     )
   let e = TwitchChannel("ninja")
-  let html = element.to_string(twitch.render(e, config))
+  let assert Ok(el) = twitch.render(e, config)
+  let html = element.to_string(el)
   let assert True = string.contains(html, "player.twitch.tv/?channel=ninja")
   let assert True = string.contains(html, "mysite.com")
 }
@@ -44,6 +45,7 @@ pub fn render_video_with_parent_test() {
       twitch: Some(embed.twitch_config("mysite.com")),
     )
   let e = TwitchVideo("123456789")
-  let html = element.to_string(twitch.render(e, config))
+  let assert Ok(el) = twitch.render(e, config)
+  let html = element.to_string(el)
   let assert True = string.contains(html, "player.twitch.tv/?video=123456789")
 }

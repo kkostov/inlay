@@ -12,7 +12,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, _config: Config) -> Element(msg) {
+pub fn render(embed: Embed, _config: Config) -> Result(Element(msg), Nil) {
   case embed {
     InstagramPost(post_type, id) -> {
       let type_segment = case post_type {
@@ -22,7 +22,7 @@ pub fn render(embed: Embed, _config: Config) -> Element(msg) {
       }
       let permalink =
         "https://www.instagram.com/" <> type_segment <> "/" <> id <> "/"
-      html.div([], [
+      Ok(html.div([], [
         html.blockquote(
           [
             attribute.class("instagram-media"),
@@ -39,9 +39,9 @@ pub fn render(embed: Embed, _config: Config) -> Element(msg) {
           ],
           "",
         ),
-      ])
+      ]))
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

@@ -40,7 +40,8 @@ pub fn non_bluesky_url_returns_none_test() {
 
 pub fn render_did_handle_test() {
   let e = BlueskyPost("did:plc:z72i7hdynmk6r22z27h6tvur", "3jt5abc")
-  let html = element.to_string(bluesky.render(e, embed.default_config()))
+  let assert Ok(el) = bluesky.render(e, embed.default_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(
       html,
@@ -51,7 +52,8 @@ pub fn render_did_handle_test() {
 
 pub fn render_handle_without_resolver_test() {
   let e = BlueskyPost("jay.bsky.social", "3jt5dwi5gzc2x")
-  let html = element.to_string(bluesky.render(e, embed.default_config()))
+  let assert Ok(el) = bluesky.render(e, embed.default_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(html, "bsky.app/profile/jay.bsky.social/post/3jt5dwi5gzc2x")
   let assert False = string.contains(html, "embed.js")
@@ -60,7 +62,8 @@ pub fn render_handle_without_resolver_test() {
 
 pub fn render_custom_domain_without_resolver_test() {
   let e = BlueskyPost("flowvi.be", "3mf7vlgfwgk2j")
-  let html = element.to_string(bluesky.render(e, embed.default_config()))
+  let assert Ok(el) = bluesky.render(e, embed.default_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(html, "bsky.app/profile/flowvi.be/post/3mf7vlgfwgk2j")
   let assert False = string.contains(html, "embed.js")
@@ -76,7 +79,8 @@ pub fn render_with_resolver_returning_error_test() {
       ),
     )
   let e = BlueskyPost("alice.bsky.social", "3jt5dwi5gzc2x")
-  let html = element.to_string(bluesky.render(e, config))
+  let assert Ok(el) = bluesky.render(e, config)
+  let html = element.to_string(el)
   let assert True =
     string.contains(
       html,
@@ -97,7 +101,8 @@ pub fn render_with_resolver_test() {
       ),
     )
   let e = BlueskyPost("flowvi.be", "3mf7vlgfwgk2j")
-  let html = element.to_string(bluesky.render(e, config))
+  let assert Ok(el) = bluesky.render(e, config)
+  let html = element.to_string(el)
   let assert True =
     string.contains(
       html,

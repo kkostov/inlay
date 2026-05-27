@@ -69,7 +69,8 @@ pub fn non_spotify_url_returns_none_test() {
 
 pub fn render_track_test() {
   let e = SpotifyMedia(SpotifyTrack, "6rqhFgbbKwnb9MLmUQDhG6")
-  let html = element.to_string(spotify.render(e, embed.default_config()))
+  let assert Ok(el) = spotify.render(e, embed.default_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(html, "open.spotify.com/embed/track/6rqhFgbbKwnb9MLmUQDhG6")
   let assert True = string.contains(html, "height=\"152\"")
@@ -77,7 +78,8 @@ pub fn render_track_test() {
 
 pub fn render_album_test() {
   let e = SpotifyMedia(SpotifyAlbum, "1DFixLWuPkv3KT3TnV35m3")
-  let html = element.to_string(spotify.render(e, embed.default_config()))
+  let assert Ok(el) = spotify.render(e, embed.default_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(html, "open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3")
   let assert True = string.contains(html, "height=\"352\"")

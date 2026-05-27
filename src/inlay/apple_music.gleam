@@ -16,7 +16,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
   case embed {
     AppleMusicMedia(media_type, country, slug, id) -> {
       let type_path = media_type_to_path(media_type)
@@ -49,7 +49,7 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
           h
         _, _ -> 450
       }
-      html.iframe([
+      Ok(html.iframe([
         attribute.src(src),
         attribute.height(height),
         attribute.attribute(
@@ -67,9 +67,9 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
           #("border-radius", "10px"),
           #("border", "0"),
         ]),
-      ])
+      ]))
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

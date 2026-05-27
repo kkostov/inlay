@@ -15,11 +15,11 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, _config: Config) -> Element(msg) {
+pub fn render(embed: Embed, _config: Config) -> Result(Element(msg), Nil) {
   case embed {
     Tweet(handle, id) -> {
       let tweet_url = "https://twitter.com/" <> handle <> "/status/" <> id
-      html.div([], [
+      Ok(html.div([], [
         html.blockquote([attribute.class("twitter-tweet")], [
           html.a([attribute.href(tweet_url)], [
             element.text(tweet_url),
@@ -33,9 +33,9 @@ pub fn render(embed: Embed, _config: Config) -> Element(msg) {
           ],
           "",
         ),
-      ])
+      ]))
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

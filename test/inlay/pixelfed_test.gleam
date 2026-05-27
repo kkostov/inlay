@@ -65,7 +65,8 @@ pub fn profile_path_without_p_prefix_returns_none_test() {
 
 pub fn render_pixelfed_post_full_test() {
   let e = PixelfedPost("pixelfed.social", "kkonstantin", "788060252604363209")
-  let html = element.to_string(pixelfed.render(e, full_config()))
+  let assert Ok(el) = pixelfed.render(e, full_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(
       html,
@@ -81,7 +82,8 @@ pub fn render_pixelfed_post_full_test() {
 
 pub fn render_pixelfed_post_compact_test() {
   let e = PixelfedPost("pixelfed.social", "kkonstantin", "788060252604363209")
-  let html = element.to_string(pixelfed.render(e, full_compact_config()))
+  let assert Ok(el) = pixelfed.render(e, full_compact_config())
+  let html = element.to_string(el)
   let assert True = string.contains(html, "caption=false")
   let assert True = string.contains(html, "likes=false")
   let assert True = string.contains(html, "layout=compact")
@@ -97,6 +99,7 @@ pub fn render_script_tag_uses_correct_server_test() {
       )),
     )
   let e = PixelfedPost("pixelfed.de", "fotograf", "788060252604363209")
-  let html = element.to_string(pixelfed.render(e, config))
+  let assert Ok(el) = pixelfed.render(e, config)
+  let html = element.to_string(el)
   let assert True = string.contains(html, "pixelfed.de/embed.js")
 }

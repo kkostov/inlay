@@ -12,11 +12,11 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, _config: Config) -> Element(msg) {
+pub fn render(embed: Embed, _config: Config) -> Result(Element(msg), Nil) {
   case embed {
     TikTokVideo(username, id) -> {
       let cite_url = "https://www.tiktok.com/" <> username <> "/video/" <> id
-      html.div([], [
+      Ok(html.div([], [
         html.blockquote(
           [
             attribute.class("tiktok-embed"),
@@ -34,9 +34,9 @@ pub fn render(embed: Embed, _config: Config) -> Element(msg) {
           ],
           "",
         ),
-      ])
+      ]))
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

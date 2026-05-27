@@ -46,7 +46,8 @@ pub fn non_user_path_returns_none_test() {
 
 pub fn render_mastodon_post_test() {
   let e = MastodonPost("mastodon.social", "iamkonstantin", "116391354521208947")
-  let html = element.to_string(mastodon.render(e, full_config()))
+  let assert Ok(el) = mastodon.render(e, full_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(
       html,

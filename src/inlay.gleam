@@ -423,7 +423,7 @@ fn do_detect(url: Uri, config: Config) -> Option(Embed) {
 }
 
 fn do_render(embed: Embed, config: Config) -> Element(msg) {
-  case embed {
+  let assert Ok(el) = case embed {
     YoutubeVideo(..) | YoutubePlaylist(..) -> youtube.render(embed, config)
     VimeoVideo(..) -> vimeo.render(embed, config)
     SpotifyMedia(..) -> spotify.render(embed, config)
@@ -439,6 +439,7 @@ fn do_render(embed: Embed, config: Config) -> Element(msg) {
     PixelfedPost(..) -> pixelfed.render(embed, config)
     AppleMusicMedia(..) -> apple_music.render(embed, config)
   }
+  el
 }
 
 fn try_one(
