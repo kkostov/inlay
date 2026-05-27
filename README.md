@@ -29,7 +29,7 @@ This is the recommended approach to avoid unexpected embeddings with links on yo
 ```gleam
 let config =
   inlay.new()
-  |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"]))
+  |> inlay.mastodon(inlay.mastodon_config(["mastodon.social"]))
 
 case inlay.embed_with(url, config) {
   Some(element) -> element
@@ -51,9 +51,9 @@ let config =
 ```gleam
 let config =
   inlay.default_config()
-  |> inlay.youtube(YoutubeConfig(no_cookie: False))
-  |> inlay.twitch(TwitchConfig(parent: "mysite.com"))
-  |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social", "fosstodon.org"]))
+  |> inlay.youtube(inlay.YoutubeConfig(no_cookie: False, aspect_ratio: None))
+  |> inlay.twitch(inlay.twitch_config("mysite.com"))
+  |> inlay.mastodon(inlay.mastodon_config(["mastodon.social", "fosstodon.org"]))
 ```
 
 ### Bluesky

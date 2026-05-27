@@ -1,11 +1,11 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay/apple_music
 import inlay/embed.{
   AppleMusicAlbum, AppleMusicArtist, AppleMusicMedia, AppleMusicMusicVideo,
   AppleMusicPlaylist, AppleMusicSong,
 }
-import inlay/provider/apple_music
 import lustre/element
 
 pub fn artist_url_test() {

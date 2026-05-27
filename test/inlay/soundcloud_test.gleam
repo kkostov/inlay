@@ -2,7 +2,7 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
 import inlay/embed.{SoundCloudTrack}
-import inlay/provider/soundcloud
+import inlay/soundcloud
 import lustre/element
 
 pub fn track_url_test() {

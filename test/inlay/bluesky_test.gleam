@@ -1,8 +1,8 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay/bluesky
 import inlay/embed.{BlueskyPost}
-import inlay/provider/bluesky
 import lustre/element
 
 pub fn standard_bluesky_url_test() {

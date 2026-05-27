@@ -2,7 +2,7 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
 import inlay/embed.{InstagramPost, Post, Reel, TV}
-import inlay/provider/instagram
+import inlay/instagram
 import lustre/element
 
 pub fn post_url_test() {

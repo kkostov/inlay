@@ -2,23 +2,31 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
 import inlay/embed.{Compact, Full, PixelfedPost}
-import inlay/provider/pixelfed
+import inlay/pixelfed
 import lustre/element
 
-fn config_with_pixelfed() -> embed.Config {
-  embed.Config(
-    ..embed.default_config(),
-    pixelfed: Some(embed.pixelfed_config(
-      ["pixelfed.social", "pixelfed.de"],
-      Full(caption: True, likes: True),
-    )),
+fn pixelfed_config() -> embed.PixelfedConfig {
+  embed.pixelfed_config(
+    ["pixelfed.social", "pixelfed.de"],
+    Full(caption: True, likes: True),
   )
 }
 
-fn config_with_pixelfed_compact() -> embed.Config {
+fn full_config() -> embed.Config {
   embed.Config(
     ..embed.default_config(),
-    pixelfed: Some(embed.pixelfed_config(["pixelfed.social"], Compact)),
+    pixelfed: Some(pixelfed_config()),
+  )
+}
+
+fn compact_config() -> embed.PixelfedConfig {
+  embed.pixelfed_config(["pixelfed.social"], Compact)
+}
+
+fn full_compact_config() -> embed.Config {
+  embed.Config(
+    ..embed.default_config(),
+    pixelfed: Some(compact_config()),
   )
 }
 
@@ -29,41 +37,35 @@ pub fn standard_pixelfed_url_test() {
     "pixelfed.social",
     "kkonstantin",
     "788060252604363209",
-  )) = pixelfed.detect(url, config_with_pixelfed())
+  )) = pixelfed.detect(url, pixelfed_config())
 }
 
 pub fn alternate_server_url_test() {
   let assert Ok(url) =
     uri.parse("https://pixelfed.de/p/fotograf/788060252604363209")
   let assert Some(PixelfedPost("pixelfed.de", "fotograf", "788060252604363209")) =
-    pixelfed.detect(url, config_with_pixelfed())
+    pixelfed.detect(url, pixelfed_config())
 }
 
 pub fn unknown_server_returns_none_test() {
   let assert Ok(url) =
     uri.parse("https://unknown.instance/p/user/788060252604363209")
-  let assert None = pixelfed.detect(url, config_with_pixelfed())
-}
-
-pub fn no_pixelfed_config_returns_none_test() {
-  let assert Ok(url) =
-    uri.parse("https://pixelfed.social/p/kkonstantin/788060252604363209")
-  let assert None = pixelfed.detect(url, embed.default_config())
+  let assert None = pixelfed.detect(url, pixelfed_config())
 }
 
 pub fn non_post_path_returns_none_test() {
   let assert Ok(url) = uri.parse("https://pixelfed.social/about")
-  let assert None = pixelfed.detect(url, config_with_pixelfed())
+  let assert None = pixelfed.detect(url, pixelfed_config())
 }
 
 pub fn profile_path_without_p_prefix_returns_none_test() {
   let assert Ok(url) = uri.parse("https://pixelfed.social/kkonstantin")
-  let assert None = pixelfed.detect(url, config_with_pixelfed())
+  let assert None = pixelfed.detect(url, pixelfed_config())
 }
 
 pub fn render_pixelfed_post_full_test() {
   let e = PixelfedPost("pixelfed.social", "kkonstantin", "788060252604363209")
-  let html = element.to_string(pixelfed.render(e, config_with_pixelfed()))
+  let html = element.to_string(pixelfed.render(e, full_config()))
   let assert True =
     string.contains(
       html,
@@ -79,8 +81,7 @@ pub fn render_pixelfed_post_full_test() {
 
 pub fn render_pixelfed_post_compact_test() {
   let e = PixelfedPost("pixelfed.social", "kkonstantin", "788060252604363209")
-  let html =
-    element.to_string(pixelfed.render(e, config_with_pixelfed_compact()))
+  let html = element.to_string(pixelfed.render(e, full_compact_config()))
   let assert True = string.contains(html, "caption=false")
   let assert True = string.contains(html, "likes=false")
   let assert True = string.contains(html, "layout=compact")

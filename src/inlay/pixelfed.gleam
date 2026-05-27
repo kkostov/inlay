@@ -6,16 +6,12 @@ import lustre/attribute
 import lustre/element.{type Element}
 import lustre/element/html
 
-pub fn detect(url: Uri, config: Config) -> Option(Embed) {
-  case config.pixelfed {
-    Some(embed.PixelfedConfig(servers: servers, ..)) ->
-      case url.host {
-        Some(host) ->
-          case list.contains(servers, host) {
-            True -> detect_pixelfed(host, url)
-            False -> None
-          }
-        None -> None
+pub fn detect(url: Uri, config: embed.PixelfedConfig) -> Option(Embed) {
+  case url.host {
+    Some(host) ->
+      case list.contains(config.servers, host) {
+        True -> detect_pixelfed(host, url)
+        False -> None
       }
     None -> None
   }
@@ -24,26 +20,23 @@ pub fn detect(url: Uri, config: Config) -> Option(Embed) {
 pub fn render(embed: Embed, config: Config) -> Element(msg) {
   case embed {
     PixelfedPost(server, user, id) -> {
-      let #(caption, likes, layout) = case config.pixelfed {
-        Some(embed.PixelfedConfig(layout: embed.Full(caption: c, likes: l), ..)) -> #(
-          c,
-          l,
-          embed.Full(c, l),
-        )
-        Some(embed.PixelfedConfig(layout: embed.Compact, ..)) -> #(
+      let #(caption, likes, layout, width) = case config.pixelfed {
+        Some(embed.PixelfedConfig(
+          layout: embed.Full(caption: c, likes: l),
+          width: w,
+          ..,
+        )) -> #(c, l, embed.Full(c, l), option.unwrap(w, 400))
+        Some(embed.PixelfedConfig(layout: embed.Compact, width: w, ..)) -> #(
           False,
           False,
           embed.Compact,
+          option.unwrap(w, 400),
         )
-        None -> #(True, True, embed.Full(True, True))
+        None -> #(True, True, embed.Full(True, True), 400)
       }
       let caption_str = bool_to_string(caption)
       let likes_str = bool_to_string(likes)
       let layout_str = layout_to_string(layout)
-      let width = case config.pixelfed {
-        Some(embed.PixelfedConfig(width: w, ..)) -> option.unwrap(w, 400)
-        None -> 400
-      }
       let src =
         "https://"
         <> server

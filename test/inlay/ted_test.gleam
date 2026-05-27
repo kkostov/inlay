@@ -2,7 +2,7 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
 import inlay/embed.{TedTalk}
-import inlay/provider/ted
+import inlay/ted
 import lustre/element
 
 pub fn standard_ted_talk_url_test() {

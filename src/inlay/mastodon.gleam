@@ -7,16 +7,12 @@ import lustre/attribute
 import lustre/element.{type Element}
 import lustre/element/html
 
-pub fn detect(url: Uri, config: Config) -> Option(Embed) {
-  case config.mastodon {
-    Some(embed.MastodonConfig(servers: servers, ..)) ->
-      case url.host {
-        Some(host) ->
-          case list.contains(servers, host) {
-            True -> detect_mastodon(host, url)
-            False -> None
-          }
-        None -> None
+pub fn detect(url: Uri, config: embed.MastodonConfig) -> Option(Embed) {
+  case url.host {
+    Some(host) ->
+      case list.contains(config.servers, host) {
+        True -> detect_mastodon(host, url)
+        False -> None
       }
     None -> None
   }

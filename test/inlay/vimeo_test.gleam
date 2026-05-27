@@ -2,7 +2,7 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
 import inlay/embed.{VimeoVideo}
-import inlay/provider/vimeo
+import inlay/vimeo
 import lustre/element
 
 pub fn standard_vimeo_url_test() {

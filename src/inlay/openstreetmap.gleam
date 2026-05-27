@@ -62,11 +62,11 @@ fn cos_deg(degrees: Float) -> Float {
 }
 
 @external(erlang, "math", "cos")
-@external(javascript, "../../inlay_ffi.mjs", "cos")
+@external(javascript, "../inlay_ffi.mjs", "cos")
 fn cos(radians: Float) -> Float
 
 @external(erlang, "math", "pow")
-@external(javascript, "../../inlay_ffi.mjs", "pow")
+@external(javascript, "../inlay_ffi.mjs", "pow")
 fn pow(base: Float, exponent: Float) -> Float
 
 fn detect_osm(url: Uri) -> Option(Embed) {

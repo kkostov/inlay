@@ -5,7 +5,7 @@ import inlay/embed.{
   SpotifyAlbum, SpotifyArtist, SpotifyEpisode, SpotifyMedia, SpotifyPlaylist,
   SpotifyShow, SpotifyTrack,
 }
-import inlay/provider/spotify
+import inlay/spotify
 import lustre/element
 
 pub fn track_url_test() {

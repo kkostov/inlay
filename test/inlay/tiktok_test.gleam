@@ -2,7 +2,7 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
 import inlay/embed.{TikTokVideo}
-import inlay/provider/tiktok
+import inlay/tiktok
 import lustre/element
 
 pub fn standard_tiktok_url_test() {

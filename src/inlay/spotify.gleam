@@ -31,7 +31,11 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
       }
       let height = case media_type {
         SpotifyTrack -> track_height
-        _ -> other_height
+        SpotifyAlbum
+        | SpotifyPlaylist
+        | SpotifyArtist
+        | SpotifyEpisode
+        | SpotifyShow -> other_height
       }
       html.div(
         [

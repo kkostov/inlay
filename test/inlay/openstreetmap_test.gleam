@@ -3,7 +3,7 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
 import inlay/embed.{MapLocation}
-import inlay/provider/openstreetmap
+import inlay/openstreetmap
 import lustre/element
 
 pub fn brussels_atomium_test() {

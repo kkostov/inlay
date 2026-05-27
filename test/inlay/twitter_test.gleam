@@ -2,7 +2,7 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
 import inlay/embed.{Tweet}
-import inlay/provider/twitter
+import inlay/twitter
 import lustre/element
 
 pub fn twitter_com_url_test() {

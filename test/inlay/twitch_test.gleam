@@ -2,7 +2,7 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
 import inlay/embed.{TwitchChannel, TwitchVideo}
-import inlay/provider/twitch
+import inlay/twitch
 import lustre/element
 
 pub fn channel_url_test() {

@@ -1,5 +1,11 @@
+//// Types and configuration for embeddable social media links.
+
 import gleam/option.{type Option, None, Some}
 
+/// A detected embeddable social media link.
+///
+/// Each variant holds the data extracted from a URL, sufficient to render
+/// the embed as HTML. Create values with `inlay.detect` or `inlay.detect_with`.
 pub type Embed {
   YoutubeVideo(id: String, start_time: Option(Int), playlist: Option(String))
   YoutubePlaylist(id: String)
@@ -24,14 +30,7 @@ pub type Embed {
   )
 }
 
-pub type AppleMusicMediaType {
-  AppleMusicAlbum
-  AppleMusicArtist
-  AppleMusicPlaylist
-  AppleMusicSong(track_id: String)
-  AppleMusicMusicVideo
-}
-
+/// Spotify media types.
 pub type SpotifyMediaType {
   SpotifyPlaylist
   SpotifyTrack
@@ -41,26 +40,45 @@ pub type SpotifyMediaType {
   SpotifyShow
 }
 
+/// Apple Music media types.
+pub type AppleMusicMediaType {
+  AppleMusicAlbum
+  AppleMusicArtist
+  AppleMusicPlaylist
+  AppleMusicSong(track_id: String)
+  AppleMusicMusicVideo
+}
+
+/// Instagram post types.
 pub type InstagramPostType {
   Post
   Reel
   TV
 }
 
+/// Pixelfed embed layout.
 pub type PixelfedLayout {
   Full(caption: Bool, likes: Bool)
   Compact
 }
 
+/// Configuration controlling which providers are enabled and their settings.
+///
+/// Each field is an `Option`: `Some(config)` enables the provider with the
+/// given settings, `None` disables it. Providers with no configuration
+/// options (Twitter, TikTok, Instagram) use `Option(Nil)`.
+///
+/// Use `default_config()` for sensible defaults or `new()` to start with
+/// all providers disabled and opt in selectively.
 pub type Config {
   Config(
     youtube: Option(YoutubeConfig),
     vimeo: Option(VimeoConfig),
     spotify: Option(SpotifyConfig),
-    twitter: Option(TwitterConfig),
-    tiktok: Option(TikTokConfig),
+    twitter: Option(Nil),
+    tiktok: Option(Nil),
     bluesky: Option(BlueskyConfig),
-    instagram: Option(InstagramConfig),
+    instagram: Option(Nil),
     twitch: Option(TwitchConfig),
     openstreetmap: Option(OpenStreetMapConfig),
     ted: Option(TedConfig),
@@ -71,14 +89,17 @@ pub type Config {
   )
 }
 
+/// YouTube embed settings.
 pub type YoutubeConfig {
   YoutubeConfig(no_cookie: Bool, aspect_ratio: Option(String))
 }
 
+/// Vimeo embed settings.
 pub type VimeoConfig {
   VimeoConfig(dnt: Bool, aspect_ratio: Option(String))
 }
 
+/// Spotify embed settings.
 pub type SpotifyConfig {
   SpotifyConfig(
     width: Option(Int),
@@ -87,42 +108,41 @@ pub type SpotifyConfig {
   )
 }
 
-pub type TwitterConfig {
-  TwitterConfig
-}
-
-pub type TikTokConfig {
-  TikTokConfig
-}
-
+/// Bluesky embed settings.
+///
+/// The optional `resolve_handle` function converts a Bluesky handle
+/// (e.g. `"user.bsky.social"`) to a DID for richer embed rendering.
 pub type BlueskyConfig {
   BlueskyConfig(resolve_handle: Option(fn(String) -> Result(String, Nil)))
 }
 
-pub type InstagramConfig {
-  InstagramConfig
-}
-
+/// Twitch embed settings. The `parent` domain is required by Twitch's
+/// embed API.
 pub type TwitchConfig {
   TwitchConfig(parent: String, aspect_ratio: Option(String))
 }
 
+/// OpenStreetMap embed settings.
 pub type OpenStreetMapConfig {
   OpenStreetMapConfig(aspect_ratio: Option(String))
 }
 
+/// TED talk embed settings.
 pub type TedConfig {
   TedConfig(aspect_ratio: Option(String))
 }
 
+/// SoundCloud embed settings.
 pub type SoundCloudConfig {
   SoundCloudConfig(width: Option(Int), height: Option(Int))
 }
 
+/// Mastodon embed settings. Only posts from listed `servers` are detected.
 pub type MastodonConfig {
   MastodonConfig(servers: List(String), width: Option(Int))
 }
 
+/// Pixelfed embed settings. Only posts from listed `servers` are detected.
 pub type PixelfedConfig {
   PixelfedConfig(
     servers: List(String),
@@ -131,6 +151,7 @@ pub type PixelfedConfig {
   )
 }
 
+/// Apple Music embed settings.
 pub type AppleMusicConfig {
   AppleMusicConfig(
     width: Option(Int),
@@ -139,42 +160,52 @@ pub type AppleMusicConfig {
   )
 }
 
+/// Create a default Bluesky configuration with no handle resolver.
 pub fn bluesky_config() -> BlueskyConfig {
   BlueskyConfig(resolve_handle: None)
 }
 
+/// Create a default YouTube configuration with privacy-enhanced mode enabled.
 pub fn youtube_config() -> YoutubeConfig {
   YoutubeConfig(no_cookie: True, aspect_ratio: None)
 }
 
+/// Create a default Vimeo configuration with Do Not Track enabled.
 pub fn vimeo_config() -> VimeoConfig {
   VimeoConfig(dnt: True, aspect_ratio: None)
 }
 
+/// Create a default Spotify configuration.
 pub fn spotify_config() -> SpotifyConfig {
   SpotifyConfig(width: None, height: None, track_height: None)
 }
 
+/// Create a Twitch configuration with the required parent domain.
 pub fn twitch_config(parent: String) -> TwitchConfig {
   TwitchConfig(parent: parent, aspect_ratio: None)
 }
 
+/// Create a default OpenStreetMap configuration.
 pub fn openstreetmap_config() -> OpenStreetMapConfig {
   OpenStreetMapConfig(aspect_ratio: None)
 }
 
+/// Create a default TED configuration.
 pub fn ted_config() -> TedConfig {
   TedConfig(aspect_ratio: None)
 }
 
+/// Create a default SoundCloud configuration.
 pub fn soundcloud_config() -> SoundCloudConfig {
   SoundCloudConfig(width: None, height: None)
 }
 
+/// Create a Mastodon configuration for the given server allowlist.
 pub fn mastodon_config(servers: List(String)) -> MastodonConfig {
   MastodonConfig(servers: servers, width: None)
 }
 
+/// Create a Pixelfed configuration for the given server allowlist and layout.
 pub fn pixelfed_config(
   servers: List(String),
   layout: PixelfedLayout,
@@ -182,19 +213,26 @@ pub fn pixelfed_config(
   PixelfedConfig(servers: servers, layout: layout, width: None)
 }
 
+/// Create a default Apple Music configuration.
 pub fn apple_music_config() -> AppleMusicConfig {
   AppleMusicConfig(width: None, height: None, song_height: None)
 }
 
+/// Create a default configuration with commonly used providers enabled.
+///
+/// Enabled: YouTube, Vimeo, Spotify, Twitter/X, TikTok, Bluesky,
+/// Instagram, OpenStreetMap, TED, SoundCloud, Apple Music.
+///
+/// Disabled (require explicit setup): Twitch, Mastodon, Pixelfed.
 pub fn default_config() -> Config {
   Config(
     youtube: Some(youtube_config()),
     vimeo: Some(vimeo_config()),
     spotify: Some(spotify_config()),
-    twitter: Some(TwitterConfig),
-    tiktok: Some(TikTokConfig),
+    twitter: Some(Nil),
+    tiktok: Some(Nil),
     bluesky: Some(bluesky_config()),
-    instagram: Some(InstagramConfig),
+    instagram: Some(Nil),
     twitch: None,
     openstreetmap: Some(openstreetmap_config()),
     ted: Some(ted_config()),
@@ -205,6 +243,9 @@ pub fn default_config() -> Config {
   )
 }
 
+/// Create an empty configuration with all providers disabled.
+/// Enable providers selectively with the builder functions in the `inlay`
+/// module.
 pub fn new() -> Config {
   Config(
     youtube: None,

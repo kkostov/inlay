@@ -2,7 +2,7 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
 import inlay/embed.{YoutubePlaylist, YoutubeVideo}
-import inlay/provider/youtube
+import inlay/youtube
 import lustre/element
 
 pub fn standard_watch_url_test() {
