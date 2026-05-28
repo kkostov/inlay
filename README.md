@@ -20,7 +20,14 @@ gleam add inlay
 
 ## Configuration
 
-`inlay.new()` has all providers disabled -- you have to opt in to what you need (any other links will fall through and not have an embed). `inlay.default_config()` starts with some providers enabled -- you can opt out of what you don't want.
+Inlay only embeds URLs whose provider you've enabled - everything else passes through as a plain link.
+
+
+- `inlay.new()` - all providers are disabled by default. You have to ppt in to the providers you want.
+
+- `inlay.default_config()` - I picked some defaults that are enabled. You can still opt in and out of others.
+
+> **Note:** When a URL's provider isn't enabled (or the URL isn't an embeddable one), Inlay returns `None` from `detect`, `embed`, and `embed_with`. See the [Lustre](#lustre) examples for inline rendering, or [`a_component(fallback)`](#a_componentfallback) for the Blogatto handler.
 
 ### Opt-in with `new()`
 
