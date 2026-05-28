@@ -58,7 +58,7 @@ let config =
 ```gleam
 let config =
   inlay.default_config()
-  |> inlay.youtube(inlay.YoutubeConfig(no_cookie: False, aspect_ratio: None))
+  |> inlay.youtube(inlay.youtube_config() |> inlay.youtube_no_cookie(False))
   |> inlay.twitch(inlay.twitch_config("mysite.com"))
   |> inlay.mastodon(inlay.mastodon_config(["mastodon.social", "fosstodon.org"]))
 ```
@@ -76,9 +76,8 @@ import gleam/dynamic/decode
 import gleam/httpc
 import gleam/http/request
 import gleam/json
-import gleam/option.{Some}
 import gleam/result
-import inlay.{BlueskyConfig}
+import inlay
 
 let resolve = fn(handle) {
   let url =
@@ -92,7 +91,7 @@ let resolve = fn(handle) {
 
 let config =
   inlay.default_config()
-  |> inlay.bluesky(BlueskyConfig(resolve_handle: Some(resolve)))
+  |> inlay.bluesky(inlay.bluesky_config() |> inlay.bluesky_resolver(resolve))
 ```
 
 ## Lustre

@@ -1,16 +1,18 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay
 import inlay/embed.{MastodonPost}
 import inlay/mastodon
 import lustre/element
 
-fn mastodon_config() -> embed.MastodonConfig {
-  embed.mastodon_config(["mastodon.social", "fosstodon.org"])
+fn mastodon_config() -> inlay.MastodonConfig {
+  inlay.mastodon_config(["mastodon.social", "fosstodon.org"])
 }
 
-fn full_config() -> embed.Config {
-  embed.Config(..embed.default_config(), mastodon: Some(mastodon_config()))
+fn full_config() -> inlay.Config {
+  inlay.default_config()
+  |> inlay.mastodon(mastodon_config())
 }
 
 pub fn standard_mastodon_url_test() {

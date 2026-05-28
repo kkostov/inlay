@@ -1,6 +1,7 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay
 import inlay/embed.{VimeoVideo}
 import inlay/vimeo
 import lustre/element
@@ -33,7 +34,7 @@ pub fn vimeo_root_returns_none_test() {
 
 pub fn render_vimeo_with_dnt_test() {
   let e = VimeoVideo("76979871", None)
-  let assert Ok(el) = vimeo.render(e, embed.default_config())
+  let assert Ok(el) = vimeo.render(e, inlay.default_config())
   let html = element.to_string(el)
   let assert True =
     string.contains(html, "player.vimeo.com/video/76979871?dnt=1")
@@ -42,7 +43,7 @@ pub fn render_vimeo_with_dnt_test() {
 
 pub fn render_vimeo_with_privacy_hash_test() {
   let e = VimeoVideo("76979871", Some("abc123"))
-  let assert Ok(el) = vimeo.render(e, embed.default_config())
+  let assert Ok(el) = vimeo.render(e, inlay.default_config())
   let html = element.to_string(el)
   let assert True =
     string.contains(html, "player.vimeo.com/video/76979871?dnt=1&amp;h=abc123")
@@ -50,10 +51,8 @@ pub fn render_vimeo_with_privacy_hash_test() {
 
 pub fn render_vimeo_without_dnt_test() {
   let config =
-    embed.Config(
-      ..embed.default_config(),
-      vimeo: Some(embed.VimeoConfig(dnt: False, aspect_ratio: None)),
-    )
+    inlay.default_config()
+    |> inlay.vimeo(inlay.vimeo_config() |> inlay.vimeo_dnt(False))
   let e = VimeoVideo("76979871", None)
   let assert Ok(el) = vimeo.render(e, config)
   let html = element.to_string(el)

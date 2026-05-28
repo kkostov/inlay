@@ -1,6 +1,7 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay
 import inlay/embed.{TikTokVideo}
 import inlay/tiktok
 import lustre/element
@@ -31,7 +32,7 @@ pub fn non_tiktok_url_returns_none_test() {
 
 pub fn render_tiktok_video_test() {
   let e = TikTokVideo("@username", "7123456789012345678")
-  let assert Ok(el) = tiktok.render(e, embed.default_config())
+  let assert Ok(el) = tiktok.render(e, inlay.default_config())
   let html = element.to_string(el)
   let assert True = string.contains(html, "tiktok-embed")
   let assert True = string.contains(html, "7123456789012345678")

@@ -1,27 +1,30 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
-import inlay/embed.{Compact, Full, PixelfedPost}
+import inlay
+import inlay/embed.{PixelfedPost}
 import inlay/pixelfed
 import lustre/element
 
-fn pixelfed_config() -> embed.PixelfedConfig {
-  embed.pixelfed_config(
+fn pixelfed_config() -> inlay.PixelfedConfig {
+  inlay.pixelfed_config(
     ["pixelfed.social", "pixelfed.de"],
-    Full(caption: True, likes: True),
+    inlay.pixelfed_full(caption: True, likes: True),
   )
 }
 
-fn full_config() -> embed.Config {
-  embed.Config(..embed.default_config(), pixelfed: Some(pixelfed_config()))
+fn full_config() -> inlay.Config {
+  inlay.default_config()
+  |> inlay.pixelfed(pixelfed_config())
 }
 
-fn compact_config() -> embed.PixelfedConfig {
-  embed.pixelfed_config(["pixelfed.social"], Compact)
+fn compact_config() -> inlay.PixelfedConfig {
+  inlay.pixelfed_config(["pixelfed.social"], inlay.pixelfed_compact())
 }
 
-fn full_compact_config() -> embed.Config {
-  embed.Config(..embed.default_config(), pixelfed: Some(compact_config()))
+fn full_compact_config() -> inlay.Config {
+  inlay.default_config()
+  |> inlay.pixelfed(compact_config())
 }
 
 pub fn standard_pixelfed_url_test() {
@@ -85,13 +88,11 @@ pub fn render_pixelfed_post_compact_test() {
 
 pub fn render_script_tag_uses_correct_server_test() {
   let config =
-    embed.Config(
-      ..embed.default_config(),
-      pixelfed: Some(embed.pixelfed_config(
-        ["pixelfed.de"],
-        Full(caption: True, likes: True),
-      )),
-    )
+    inlay.default_config()
+    |> inlay.pixelfed(inlay.pixelfed_config(
+      ["pixelfed.de"],
+      inlay.pixelfed_full(caption: True, likes: True),
+    ))
   let e = PixelfedPost("pixelfed.de", "fotograf", "788060252604363209")
   let assert Ok(el) = pixelfed.render(e, config)
   let html = element.to_string(el)

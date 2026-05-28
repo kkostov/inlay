@@ -5,7 +5,6 @@ import blogatto/post.{type Post}
 import gleam/io
 import gleam/option
 import inlay
-import inlay/embed.{Full}
 import lustre/attribute
 import lustre/element.{type Element}
 import lustre/element/html
@@ -17,7 +16,7 @@ fn inlay_config() -> inlay.Config {
   |> inlay.mastodon(inlay.mastodon_config(["mastodon.social"]))
   |> inlay.pixelfed(inlay.pixelfed_config(
     ["pixelfed.social"],
-    Full(caption: True, likes: True),
+    inlay.pixelfed_full(caption: True, likes: True),
   ))
   |> inlay.spotify(inlay.spotify_config())
   |> inlay.apple_music(inlay.apple_music_config())

@@ -1,6 +1,7 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay
 import inlay/bluesky
 import inlay/embed.{BlueskyPost}
 import lustre/element
@@ -40,7 +41,7 @@ pub fn non_bluesky_url_returns_none_test() {
 
 pub fn render_did_handle_test() {
   let e = BlueskyPost("did:plc:z72i7hdynmk6r22z27h6tvur", "3jt5abc")
-  let assert Ok(el) = bluesky.render(e, embed.default_config())
+  let assert Ok(el) = bluesky.render(e, inlay.default_config())
   let html = element.to_string(el)
   let assert True =
     string.contains(
@@ -52,7 +53,7 @@ pub fn render_did_handle_test() {
 
 pub fn render_handle_without_resolver_test() {
   let e = BlueskyPost("jay.bsky.social", "3jt5dwi5gzc2x")
-  let assert Ok(el) = bluesky.render(e, embed.default_config())
+  let assert Ok(el) = bluesky.render(e, inlay.default_config())
   let html = element.to_string(el)
   let assert True =
     string.contains(html, "bsky.app/profile/jay.bsky.social/post/3jt5dwi5gzc2x")
@@ -62,7 +63,7 @@ pub fn render_handle_without_resolver_test() {
 
 pub fn render_custom_domain_without_resolver_test() {
   let e = BlueskyPost("flowvi.be", "3mf7vlgfwgk2j")
-  let assert Ok(el) = bluesky.render(e, embed.default_config())
+  let assert Ok(el) = bluesky.render(e, inlay.default_config())
   let html = element.to_string(el)
   let assert True =
     string.contains(html, "bsky.app/profile/flowvi.be/post/3mf7vlgfwgk2j")
@@ -72,11 +73,10 @@ pub fn render_custom_domain_without_resolver_test() {
 
 pub fn render_with_resolver_returning_error_test() {
   let config =
-    embed.Config(
-      ..embed.default_config(),
-      bluesky: Some(
-        embed.BlueskyConfig(resolve_handle: Some(fn(_handle) { Error(Nil) })),
-      ),
+    inlay.default_config()
+    |> inlay.bluesky(
+      inlay.bluesky_config()
+      |> inlay.bluesky_resolver(fn(_handle) { Error(Nil) }),
     )
   let e = BlueskyPost("alice.bsky.social", "3jt5dwi5gzc2x")
   let assert Ok(el) = bluesky.render(e, config)
@@ -92,13 +92,10 @@ pub fn render_with_resolver_returning_error_test() {
 
 pub fn render_with_resolver_test() {
   let config =
-    embed.Config(
-      ..embed.default_config(),
-      bluesky: Some(
-        embed.BlueskyConfig(
-          resolve_handle: Some(fn(_handle) { Ok("did:plc:test123") }),
-        ),
-      ),
+    inlay.default_config()
+    |> inlay.bluesky(
+      inlay.bluesky_config()
+      |> inlay.bluesky_resolver(fn(_handle) { Ok("did:plc:test123") }),
     )
   let e = BlueskyPost("flowvi.be", "3mf7vlgfwgk2j")
   let assert Ok(el) = bluesky.render(e, config)

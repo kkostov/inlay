@@ -158,6 +158,19 @@ pub fn pixelfed_config(
   embed.pixelfed_config(servers, layout)
 }
 
+/// Pixelfed embed layout that shows the post with optional caption and likes.
+pub fn pixelfed_full(
+  caption caption: Bool,
+  likes likes: Bool,
+) -> PixelfedLayout {
+  embed.Full(caption: caption, likes: likes)
+}
+
+/// Pixelfed embed layout that shows a compact view of the post.
+pub fn pixelfed_compact() -> PixelfedLayout {
+  embed.Compact
+}
+
 /// Create a default Apple Music configuration.
 pub fn apple_music_config() -> AppleMusicConfig {
   embed.apple_music_config()
@@ -177,6 +190,30 @@ pub fn default_config() -> Config {
 /// Enable providers selectively with the builder functions.
 pub fn new() -> Config {
   embed.new()
+}
+
+/// Set whether YouTube embeds use the privacy-enhanced `youtube-nocookie.com`
+/// domain. Enabled by default.
+pub fn youtube_no_cookie(
+  config: YoutubeConfig,
+  no_cookie: Bool,
+) -> YoutubeConfig {
+  embed.YoutubeConfig(..config, no_cookie: no_cookie)
+}
+
+/// Set whether Vimeo embeds include the Do Not Track flag.
+/// Enabled by default.
+pub fn vimeo_dnt(config: VimeoConfig, dnt: Bool) -> VimeoConfig {
+  embed.VimeoConfig(..config, dnt: dnt)
+}
+
+/// Set a function that resolves a Bluesky handle (e.g. `"user.bsky.social"`)
+/// to a DID. When provided, embeds render with richer Bluesky markup.
+pub fn bluesky_resolver(
+  config: BlueskyConfig,
+  resolve: fn(String) -> Result(String, Nil),
+) -> BlueskyConfig {
+  embed.BlueskyConfig(..config, resolve_handle: Some(resolve))
 }
 
 /// Enable YouTube embeds with the given configuration.

@@ -2,6 +2,7 @@ import gleam/float
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay
 import inlay/embed.{MapLocation}
 import inlay/openstreetmap
 import lustre/element
@@ -35,7 +36,7 @@ pub fn non_osm_url_returns_none_test() {
 
 pub fn render_brussels_atomium_test() {
   let e = MapLocation(17, 50.8949, 4.3416)
-  let assert Ok(el) = openstreetmap.render(e, embed.default_config())
+  let assert Ok(el) = openstreetmap.render(e, inlay.default_config())
   let html = element.to_string(el)
   let assert True = string.contains(html, "openstreetmap.org/export/embed.html")
   let assert True = string.contains(html, "bbox=")
@@ -44,7 +45,7 @@ pub fn render_brussels_atomium_test() {
 
 pub fn bounding_box_axis_correction_test() {
   let e = MapLocation(17, 50.8949, 4.3416)
-  let assert Ok(el) = openstreetmap.render(e, embed.default_config())
+  let assert Ok(el) = openstreetmap.render(e, inlay.default_config())
   let html = element.to_string(el)
 
   let assert Ok(#(_, after_bbox)) = string.split_once(html, "bbox=")

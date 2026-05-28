@@ -1,6 +1,7 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay
 import inlay/embed.{Tweet}
 import inlay/twitter
 import lustre/element
@@ -41,7 +42,7 @@ pub fn non_twitter_url_returns_none_test() {
 
 pub fn render_tweet_test() {
   let e = Tweet("elikiiii", "1740473673205620863")
-  let assert Ok(el) = twitter.render(e, embed.default_config())
+  let assert Ok(el) = twitter.render(e, inlay.default_config())
   let html = element.to_string(el)
   let assert True = string.contains(html, "twitter-tweet")
   let assert True =
