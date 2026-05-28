@@ -1,8 +1,9 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay
 import inlay/embed.{TwitchChannel, TwitchVideo}
-import inlay/provider/twitch
+import inlay/twitch
 import lustre/element
 
 pub fn channel_url_test() {
@@ -27,23 +28,21 @@ pub fn non_twitch_url_returns_none_test() {
 
 pub fn render_channel_with_parent_test() {
   let config =
-    embed.Config(
-      ..embed.default_config(),
-      twitch: Some(embed.twitch_config("mysite.com")),
-    )
+    inlay.default_config()
+    |> inlay.twitch(inlay.twitch_config("mysite.com"))
   let e = TwitchChannel("ninja")
-  let html = element.to_string(twitch.render(e, config))
+  let assert Ok(el) = twitch.render(e, config)
+  let html = element.to_string(el)
   let assert True = string.contains(html, "player.twitch.tv/?channel=ninja")
   let assert True = string.contains(html, "mysite.com")
 }
 
 pub fn render_video_with_parent_test() {
   let config =
-    embed.Config(
-      ..embed.default_config(),
-      twitch: Some(embed.twitch_config("mysite.com")),
-    )
+    inlay.default_config()
+    |> inlay.twitch(inlay.twitch_config("mysite.com"))
   let e = TwitchVideo("123456789")
-  let html = element.to_string(twitch.render(e, config))
+  let assert Ok(el) = twitch.render(e, config)
+  let html = element.to_string(el)
   let assert True = string.contains(html, "player.twitch.tv/?video=123456789")
 }

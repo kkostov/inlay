@@ -1,8 +1,9 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay
 import inlay/embed.{YoutubePlaylist, YoutubeVideo}
-import inlay/provider/youtube
+import inlay/youtube
 import lustre/element
 
 pub fn standard_watch_url_test() {
@@ -94,7 +95,8 @@ pub fn playlist_without_list_param_returns_none_test() {
 
 pub fn render_video_nocookie_test() {
   let e = YoutubeVideo("dQw4w9WgXcQ", None, None)
-  let html = element.to_string(youtube.render(e, embed.default_config()))
+  let assert Ok(el) = youtube.render(e, inlay.default_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(html, "youtube-nocookie.com/embed/dQw4w9WgXcQ")
   let assert True = string.contains(html, "allowfullscreen")
@@ -102,14 +104,16 @@ pub fn render_video_nocookie_test() {
 
 pub fn render_video_with_start_time_test() {
   let e = YoutubeVideo("abc123", Some(120), None)
-  let html = element.to_string(youtube.render(e, embed.default_config()))
+  let assert Ok(el) = youtube.render(e, inlay.default_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(html, "youtube-nocookie.com/embed/abc123?start=120")
 }
 
 pub fn render_playlist_test() {
   let e = YoutubePlaylist("PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf")
-  let html = element.to_string(youtube.render(e, embed.default_config()))
+  let assert Ok(el) = youtube.render(e, inlay.default_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(
       html,
@@ -119,11 +123,10 @@ pub fn render_playlist_test() {
 
 pub fn render_video_cookie_domain_test() {
   let config =
-    embed.Config(
-      ..embed.default_config(),
-      youtube: Some(embed.YoutubeConfig(no_cookie: False, aspect_ratio: None)),
-    )
+    inlay.default_config()
+    |> inlay.youtube(inlay.youtube_config() |> inlay.youtube_no_cookie(False))
   let e = YoutubeVideo("test123", None, None)
-  let html = element.to_string(youtube.render(e, config))
+  let assert Ok(el) = youtube.render(e, config)
+  let html = element.to_string(el)
   let assert True = string.contains(html, "www.youtube.com/embed/test123")
 }

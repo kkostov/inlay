@@ -16,7 +16,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
   case embed {
     AppleMusicMedia(media_type, country, slug, id) -> {
       let type_path = media_type_to_path(media_type)
@@ -45,31 +45,33 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
         AppleMusicArtist, Some(embed.AppleMusicConfig(height: Some(h), ..)) -> h
         AppleMusicPlaylist, Some(embed.AppleMusicConfig(height: Some(h), ..)) ->
           h
-        AppleMusicMusicVideo, Some(embed.AppleMusicConfig(height: Some(h), ..)) ->
-          h
+        AppleMusicMusicVideo, Some(embed.AppleMusicConfig(height: Some(h), ..))
+        -> h
         _, _ -> 450
       }
-      html.iframe([
-        attribute.src(src),
-        attribute.height(height),
-        attribute.attribute(
-          "allow",
-          "autoplay *; encrypted-media *; fullscreen *; clipboard-write",
-        ),
-        attribute.attribute(
-          "sandbox",
-          "allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation",
-        ),
-        attribute.styles([
-          #("width", "100%"),
-          #("max-width", "660px"),
-          #("overflow", "hidden"),
-          #("border-radius", "10px"),
-          #("border", "0"),
+      Ok(
+        html.iframe([
+          attribute.src(src),
+          attribute.height(height),
+          attribute.attribute(
+            "allow",
+            "autoplay *; encrypted-media *; fullscreen *; clipboard-write",
+          ),
+          attribute.attribute(
+            "sandbox",
+            "allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation",
+          ),
+          attribute.styles([
+            #("width", "100%"),
+            #("max-width", "660px"),
+            #("overflow", "hidden"),
+            #("border-radius", "10px"),
+            #("border", "0"),
+          ]),
         ]),
-      ])
+      )
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

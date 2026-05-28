@@ -13,7 +13,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
   case embed {
     SoundCloudTrack(path) -> {
       let #(width, height) = case config.soundcloud {
@@ -25,18 +25,20 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
       }
       let encoded_url = uri.percent_encode("https://soundcloud.com" <> path)
       let src = "https://w.soundcloud.com/player/?url=" <> encoded_url
-      html.div([], [
-        html.iframe([
-          attribute.src(src),
-          attribute.width(width),
-          attribute.height(height),
-          attribute.attribute("frameborder", "0"),
-          attribute.attribute("allow", "autoplay"),
-          attribute.attribute("loading", "lazy"),
+      Ok(
+        html.div([], [
+          html.iframe([
+            attribute.src(src),
+            attribute.width(width),
+            attribute.height(height),
+            attribute.attribute("frameborder", "0"),
+            attribute.attribute("allow", "autoplay"),
+            attribute.attribute("loading", "lazy"),
+          ]),
         ]),
-      ])
+      )
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

@@ -12,7 +12,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, _config: Config) -> Element(msg) {
+pub fn render(embed: Embed, _config: Config) -> Result(Element(msg), Nil) {
   case embed {
     InstagramPost(post_type, id) -> {
       let type_segment = case post_type {
@@ -22,26 +22,28 @@ pub fn render(embed: Embed, _config: Config) -> Element(msg) {
       }
       let permalink =
         "https://www.instagram.com/" <> type_segment <> "/" <> id <> "/"
-      html.div([], [
-        html.blockquote(
-          [
-            attribute.class("instagram-media"),
-            attribute.attribute("data-instgrm-permalink", permalink),
-          ],
-          [
-            html.a([attribute.href(permalink)], [element.text(permalink)]),
-          ],
-        ),
-        html.script(
-          [
-            attribute.src("https://www.instagram.com/embed.js"),
-            attribute.attribute("async", "true"),
-          ],
-          "",
-        ),
-      ])
+      Ok(
+        html.div([], [
+          html.blockquote(
+            [
+              attribute.class("instagram-media"),
+              attribute.attribute("data-instgrm-permalink", permalink),
+            ],
+            [
+              html.a([attribute.href(permalink)], [element.text(permalink)]),
+            ],
+          ),
+          html.script(
+            [
+              attribute.src("https://www.instagram.com/embed.js"),
+              attribute.attribute("async", "true"),
+            ],
+            "",
+          ),
+        ]),
+      )
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

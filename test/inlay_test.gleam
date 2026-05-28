@@ -3,8 +3,8 @@ import gleam/string
 import gleeunit
 import inlay
 import inlay/embed.{
-  BlueskyPost, Full, MastodonPost, PixelfedPost, SpotifyMedia, SpotifyTrack,
-  TedTalk, YoutubeConfig, YoutubePlaylist, YoutubeVideo,
+  BlueskyPost, MastodonPost, PixelfedPost, SpotifyMedia, SpotifyTrack, TedTalk,
+  YoutubePlaylist, YoutubeVideo,
 }
 import lustre/element
 
@@ -64,7 +64,7 @@ pub fn embed_unknown_url_returns_none_test() {
 pub fn embed_with_custom_config_test() {
   let config =
     inlay.default_config()
-    |> inlay.youtube(YoutubeConfig(no_cookie: False, aspect_ratio: None))
+    |> inlay.youtube(inlay.youtube_config() |> inlay.youtube_no_cookie(False))
   let assert Some(el) =
     inlay.embed_with("https://www.youtube.com/watch?v=test123", config)
   let html = element.to_string(el)
@@ -108,7 +108,7 @@ pub fn pixelfed_detect_with_config_test() {
     inlay.default_config()
     |> inlay.pixelfed(inlay.pixelfed_config(
       ["pixelfed.social"],
-      Full(caption: True, likes: True),
+      inlay.pixelfed_full(caption: True, likes: True),
     ))
   let assert Some(PixelfedPost(
     "pixelfed.social",

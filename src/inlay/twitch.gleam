@@ -12,18 +12,10 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
   let parent = case config.twitch {
     Some(embed.TwitchConfig(parent: p, ..)) -> p
     None -> "localhost"
-  }
-
-  let src = case embed {
-    TwitchChannel(name) ->
-      "https://player.twitch.tv/?channel=" <> name <> "&parent=" <> parent
-    TwitchVideo(id) ->
-      "https://player.twitch.tv/?video=" <> id <> "&parent=" <> parent
-    _ -> panic as "unreachable"
   }
 
   let aspect_ratio = case config.twitch {
@@ -31,9 +23,26 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
     _ -> "56.25%"
   }
 
-  iframe.responsive(src, aspect_ratio, [
-    attribute.attribute("allowfullscreen", "true"),
-  ])
+  case embed {
+    TwitchChannel(name) -> {
+      let src =
+        "https://player.twitch.tv/?channel=" <> name <> "&parent=" <> parent
+      Ok(
+        iframe.responsive(src, aspect_ratio, [
+          attribute.attribute("allowfullscreen", "true"),
+        ]),
+      )
+    }
+    TwitchVideo(id) -> {
+      let src = "https://player.twitch.tv/?video=" <> id <> "&parent=" <> parent
+      Ok(
+        iframe.responsive(src, aspect_ratio, [
+          attribute.attribute("allowfullscreen", "true"),
+        ]),
+      )
+    }
+    _ -> Error(Nil)
+  }
 }
 
 fn detect_twitch(url: Uri) -> Option(Embed) {

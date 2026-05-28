@@ -20,7 +20,14 @@ gleam add inlay
 
 ## Configuration
 
-`inlay.new()` has all providers disabled -- you have to opt in to what you need (any other links will fall through and not have an embed). `inlay.default_config()` starts with some providers enabled -- you can opt out of what you don't want.
+Inlay only embeds URLs whose provider you've enabled - everything else passes through as a plain link.
+
+
+- `inlay.new()` - all providers are disabled by default. You have to ppt in to the providers you want.
+
+- `inlay.default_config()` - I picked some defaults that are enabled. You can still opt in and out of others.
+
+> **Note:** When a URL's provider isn't enabled (or the URL isn't an embeddable one), Inlay returns `None` from `detect`, `embed`, and `embed_with`. See the [Lustre](#lustre) examples for inline rendering, or [`a_component(fallback)`](#a_componentfallback) for the Blogatto handler.
 
 ### Opt-in with `new()`
 
@@ -29,7 +36,7 @@ This is the recommended approach to avoid unexpected embeddings with links on yo
 ```gleam
 let config =
   inlay.new()
-  |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social"]))
+  |> inlay.mastodon(inlay.mastodon_config(["mastodon.social"]))
 
 case inlay.embed_with(url, config) {
   Some(element) -> element
@@ -51,9 +58,9 @@ let config =
 ```gleam
 let config =
   inlay.default_config()
-  |> inlay.youtube(YoutubeConfig(no_cookie: False))
-  |> inlay.twitch(TwitchConfig(parent: "mysite.com"))
-  |> inlay.mastodon(MastodonConfig(servers: ["mastodon.social", "fosstodon.org"]))
+  |> inlay.youtube(inlay.youtube_config() |> inlay.youtube_no_cookie(False))
+  |> inlay.twitch(inlay.twitch_config("mysite.com"))
+  |> inlay.mastodon(inlay.mastodon_config(["mastodon.social", "fosstodon.org"]))
 ```
 
 ### Bluesky
@@ -69,9 +76,8 @@ import gleam/dynamic/decode
 import gleam/httpc
 import gleam/http/request
 import gleam/json
-import gleam/option.{Some}
 import gleam/result
-import inlay.{BlueskyConfig}
+import inlay
 
 let resolve = fn(handle) {
   let url =
@@ -85,7 +91,7 @@ let resolve = fn(handle) {
 
 let config =
   inlay.default_config()
-  |> inlay.bluesky(BlueskyConfig(resolve_handle: Some(resolve)))
+  |> inlay.bluesky(inlay.bluesky_config() |> inlay.bluesky_resolver(resolve))
 ```
 
 ## Lustre
@@ -153,7 +159,7 @@ case inlay.embed("https://vimeo.com/148751763") {
 
 ## Blogatto
 
-[Blogatto](https://blogat.to/)'s markdown renderer lets you replace how specific HTML tags are produced. Inlay provides a custom `<a>` tag handler -- when the href points to an embeddable URL, the link is replaced with an embedded preview. Non-embeddable links pass through to a fallback function. You can intercept and further customize this behavior if needed.
+[Blogatto](https://blogat.to/)'s markdown renderer lets you replace how specific HTML tags are produced. Inlay provides a custom `<a>` tag handler - when the href points to an embeddable URL, the link is replaced with an embedded preview. Non-embeddable links pass through to a fallback function. You can intercept and further customize this behavior if needed.
 
 ### `a_component_default()`
 

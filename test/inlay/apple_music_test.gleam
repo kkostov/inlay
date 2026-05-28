@@ -1,11 +1,12 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay
+import inlay/apple_music
 import inlay/embed.{
   AppleMusicAlbum, AppleMusicArtist, AppleMusicMedia, AppleMusicMusicVideo,
   AppleMusicPlaylist, AppleMusicSong,
 }
-import inlay/provider/apple_music
 import lustre/element
 
 pub fn artist_url_test() {
@@ -90,7 +91,8 @@ pub fn render_song_test() {
       "bring-me-to-life",
       "1451078854",
     )
-  let html = element.to_string(apple_music.render(e, embed.default_config()))
+  let assert Ok(el) = apple_music.render(e, inlay.default_config())
+  let html = element.to_string(el)
   let assert True = string.contains(html, "embed.music.apple.com")
   let assert True = string.contains(html, "height=\"175\"")
   let assert True = string.contains(html, "?i=1451078855")
@@ -98,14 +100,16 @@ pub fn render_song_test() {
 
 pub fn render_album_test() {
   let e = AppleMusicMedia(AppleMusicAlbum, "be", "bleed-out", "1699386566")
-  let html = element.to_string(apple_music.render(e, embed.default_config()))
+  let assert Ok(el) = apple_music.render(e, inlay.default_config())
+  let html = element.to_string(el)
   let assert True = string.contains(html, "embed.music.apple.com")
   let assert True = string.contains(html, "height=\"450\"")
 }
 
 pub fn render_artist_test() {
   let e = AppleMusicMedia(AppleMusicArtist, "be", "evanescence", "42102393")
-  let html = element.to_string(apple_music.render(e, embed.default_config()))
+  let assert Ok(el) = apple_music.render(e, inlay.default_config())
+  let html = element.to_string(el)
   let assert True =
     string.contains(
       html,

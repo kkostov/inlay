@@ -12,31 +12,33 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, _config: Config) -> Element(msg) {
+pub fn render(embed: Embed, _config: Config) -> Result(Element(msg), Nil) {
   case embed {
     TikTokVideo(username, id) -> {
       let cite_url = "https://www.tiktok.com/" <> username <> "/video/" <> id
-      html.div([], [
-        html.blockquote(
-          [
-            attribute.class("tiktok-embed"),
-            attribute.attribute("cite", cite_url),
-            attribute.attribute("data-video-id", id),
-          ],
-          [
-            html.a([attribute.href(cite_url)], [element.text(cite_url)]),
-          ],
-        ),
-        html.script(
-          [
-            attribute.src("https://www.tiktok.com/embed.js"),
-            attribute.attribute("async", "true"),
-          ],
-          "",
-        ),
-      ])
+      Ok(
+        html.div([], [
+          html.blockquote(
+            [
+              attribute.class("tiktok-embed"),
+              attribute.attribute("cite", cite_url),
+              attribute.attribute("data-video-id", id),
+            ],
+            [
+              html.a([attribute.href(cite_url)], [element.text(cite_url)]),
+            ],
+          ),
+          html.script(
+            [
+              attribute.src("https://www.tiktok.com/embed.js"),
+              attribute.attribute("async", "true"),
+            ],
+            "",
+          ),
+        ]),
+      )
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 

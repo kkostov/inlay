@@ -16,7 +16,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
   case embed {
     SpotifyMedia(media_type, id) -> {
       let type_str = media_type_to_string(media_type)
@@ -31,31 +31,37 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
       }
       let height = case media_type {
         SpotifyTrack -> track_height
-        _ -> other_height
+        SpotifyAlbum
+        | SpotifyPlaylist
+        | SpotifyArtist
+        | SpotifyEpisode
+        | SpotifyShow -> other_height
       }
-      html.div(
-        [
-          attribute.styles([
-            #("border-radius", "12px"),
-            #("overflow", "hidden"),
-          ]),
-        ],
-        [
-          html.iframe([
-            attribute.src(src),
-            attribute.width(width),
-            attribute.height(height),
-            attribute.attribute("frameborder", "0"),
-            attribute.attribute(
-              "allow",
-              "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture",
-            ),
-            attribute.attribute("loading", "lazy"),
-          ]),
-        ],
+      Ok(
+        html.div(
+          [
+            attribute.styles([
+              #("border-radius", "12px"),
+              #("overflow", "hidden"),
+            ]),
+          ],
+          [
+            html.iframe([
+              attribute.src(src),
+              attribute.width(width),
+              attribute.height(height),
+              attribute.attribute("frameborder", "0"),
+              attribute.attribute(
+                "allow",
+                "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture",
+              ),
+              attribute.attribute("loading", "lazy"),
+            ]),
+          ],
+        ),
       )
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 
@@ -71,7 +77,10 @@ fn detect_spotify(url: Uri) -> Option(Embed) {
   }
 }
 
-fn validate_id(id: String, media_type: embed.SpotifyMediaType) -> Option(Embed) {
+fn validate_id(
+  id: String,
+  media_type: embed.SpotifyMediaType,
+) -> Option(Embed) {
   case string.length(id) == 22 {
     True -> Some(SpotifyMedia(media_type, id))
     False -> None

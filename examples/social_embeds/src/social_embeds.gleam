@@ -5,7 +5,6 @@ import blogatto/post.{type Post}
 import gleam/io
 import gleam/option
 import inlay
-import inlay/embed
 import lustre/attribute
 import lustre/element.{type Element}
 import lustre/element/html
@@ -13,93 +12,23 @@ import lustre/element/html
 fn inlay_config() -> inlay.Config {
   inlay.new()
   |> inlay.youtube(inlay.youtube_config())
+  |> inlay.bluesky(inlay.bluesky_config())
   |> inlay.mastodon(inlay.mastodon_config(["mastodon.social"]))
   |> inlay.pixelfed(inlay.pixelfed_config(
     ["pixelfed.social"],
-    embed.Full(caption: True, likes: True),
+    inlay.pixelfed_full(caption: True, likes: True),
   ))
   |> inlay.spotify(inlay.spotify_config())
   |> inlay.apple_music(inlay.apple_music_config())
   |> inlay.openstreetmap(inlay.openstreetmap_config())
 }
 
+fn render_embed(url: String) -> Element(Nil) {
+  inlay.embed_with(url, inlay_config())
+  |> option.unwrap(element.none())
+}
+
 fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
-  let mastodon_embed =
-    inlay.embed_with(
-      "https://mastodon.social/@iamkonstantin/116391354521208947",
-      inlay_config(),
-    )
-    |> option.unwrap(element.none())
-
-  let pixelfed_embed =
-    inlay.embed_with(
-      "https://pixelfed.social/p/kkonstantin/788060252604363209",
-      inlay_config(),
-    )
-    |> option.unwrap(element.none())
-
-  let youtube_embed =
-    inlay.embed_with(
-      "https://www.youtube.com/watch?v=XBu0m5JAUsA",
-      inlay_config(),
-    )
-    |> option.unwrap(element.none())
-
-  let bluesky_embed =
-    inlay.embed(
-      "https://bsky.app/profile/did:plc:bwm3ipmp7fidz67iy4atioa5/post/3max7rufmvp2y",
-    )
-    |> option.unwrap(element.none())
-
-  let spotify_artist_embed =
-    inlay.embed_with(
-      "https://open.spotify.com/artist/7GyhmlEy51sGUE09A5AWzc?si=Thh-F4JSTCmx3I5D5Ofljw",
-      inlay_config(),
-    )
-    |> option.unwrap(element.none())
-
-  let spotify_track_embed =
-    inlay.embed_with(
-      "https://open.spotify.com/track/6dgOGIJjlUDGD7hJ0CbIJI?si=a7e23bbaf33b4b14",
-      inlay_config(),
-    )
-    |> option.unwrap(element.none())
-
-  let spotify_playlist_embed =
-    inlay.embed_with(
-      "https://open.spotify.com/playlist/3jsMM3KminuLxYCFy6PKFu?si=Gsighi56SB6HmtDrO3vI-w",
-      inlay_config(),
-    )
-    |> option.unwrap(element.none())
-
-  let apple_music_artist_embed =
-    inlay.embed_with(
-      "https://music.apple.com/be/artist/evanescence/42102393",
-      inlay_config(),
-    )
-    |> option.unwrap(element.none())
-
-  let apple_music_album_embed =
-    inlay.embed_with(
-      "https://music.apple.com/be/album/bleed-out/1699386566",
-      inlay_config(),
-    )
-    |> option.unwrap(element.none())
-
-  let apple_music_playlist_embed =
-    inlay.embed_with(
-      "https://music.apple.com/be/playlist/ramin-djawadi-essentials/pl.ac83e6e212d5400198f4c8c2110a2af1",
-      inlay_config(),
-    )
-    |> option.unwrap(element.none())
-
-  let osm_embed =
-    inlay.embed_with(
-      "https://www.openstreetmap.org/relation/19189218#map=17/50.8949/4.3416",
-      inlay_config(),
-    )
-    |> option.unwrap(element.none())
-
   html.html([], [
     html.head([], [
       html.meta([attribute.attribute("charset", "utf-8")]),
@@ -132,53 +61,75 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
             [element.text("GitHub")],
           ),
         ]),
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("Mastodon")]),
-          mastodon_embed,
-        ]),
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("Pixelfed")]),
-          pixelfed_embed,
-        ]),
-
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("YouTube")]),
-          youtube_embed,
-        ]),
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("Bluesky")]),
-          bluesky_embed,
-        ]),
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("Spotify Artist")]),
-          spotify_artist_embed,
-        ]),
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("Spotify Track")]),
-          spotify_track_embed,
-        ]),
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("Spotify Playlist")]),
-          spotify_playlist_embed,
-        ]),
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("Apple Music Artist")]),
-          apple_music_artist_embed,
-        ]),
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("Apple Music Album")]),
-          apple_music_album_embed,
-        ]),
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("Apple Music Playlist")]),
-          apple_music_playlist_embed,
-        ]),
-        html.details([attribute.class("embed-section")], [
-          html.summary([], [element.text("OpenStreetMap")]),
-          osm_embed,
-        ]),
+        section(
+          "Mastodon",
+          render_embed(
+            "https://mastodon.social/@iamkonstantin/116391354521208947",
+          ),
+        ),
+        section(
+          "Pixelfed",
+          render_embed(
+            "https://pixelfed.social/p/kkonstantin/788060252604363209",
+          ),
+        ),
+        section(
+          "YouTube",
+          render_embed("https://www.youtube.com/watch?v=XBu0m5JAUsA"),
+        ),
+        section(
+          "Bluesky",
+          render_embed(
+            "https://bsky.app/profile/did:plc:bwm3ipmp7fidz67iy4atioa5/post/3max7rufmvp2y",
+          ),
+        ),
+        section(
+          "Spotify Artist",
+          render_embed(
+            "https://open.spotify.com/artist/7GyhmlEy51sGUE09A5AWzc?si=Thh-F4JSTCmx3I5D5Ofljw",
+          ),
+        ),
+        section(
+          "Spotify Track",
+          render_embed(
+            "https://open.spotify.com/track/6dgOGIJjlUDGD7hJ0CbIJI?si=a7e23bbaf33b4b14",
+          ),
+        ),
+        section(
+          "Spotify Playlist",
+          render_embed(
+            "https://open.spotify.com/playlist/3jsMM3KminuLxYCFy6PKFu?si=Gsighi56SB6HmtDrO3vI-w",
+          ),
+        ),
+        section(
+          "Apple Music Artist",
+          render_embed("https://music.apple.com/be/artist/evanescence/42102393"),
+        ),
+        section(
+          "Apple Music Album",
+          render_embed("https://music.apple.com/be/album/bleed-out/1699386566"),
+        ),
+        section(
+          "Apple Music Playlist",
+          render_embed(
+            "https://music.apple.com/be/playlist/ramin-djawadi-essentials/pl.ac83e6e212d5400198f4c8c2110a2af1",
+          ),
+        ),
+        section(
+          "OpenStreetMap",
+          render_embed(
+            "https://www.openstreetmap.org/relation/19189218#map=17/50.8949/4.3416",
+          ),
+        ),
       ]),
     ]),
+  ])
+}
+
+fn section(title: String, content: Element(Nil)) -> Element(Nil) {
+  html.details([attribute.class("embed-section")], [
+    html.summary([], [element.text(title)]),
+    content,
   ])
 }
 

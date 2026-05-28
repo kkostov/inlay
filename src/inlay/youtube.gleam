@@ -17,14 +17,19 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
   let domain = case config.youtube {
     Some(embed.YoutubeConfig(no_cookie: True, ..)) ->
       "https://www.youtube-nocookie.com"
     _ -> "https://www.youtube.com"
   }
 
-  let src = case embed {
+  let aspect_ratio = case config.youtube {
+    Some(embed.YoutubeConfig(aspect_ratio: Some(r), ..)) -> r
+    _ -> "56.25%"
+  }
+
+  case embed {
     YoutubeVideo(id, start_time, playlist) -> {
       let base = domain <> "/embed/" <> id
       let params = case start_time, playlist {
@@ -33,24 +38,31 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
         None, Some(p) -> "?list=" <> p
         None, None -> ""
       }
-      base <> params
+      let src = base <> params
+      Ok(
+        iframe.responsive(src, aspect_ratio, [
+          attribute.attribute("allowfullscreen", "true"),
+          attribute.attribute(
+            "allow",
+            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+          ),
+        ]),
+      )
     }
-    YoutubePlaylist(id) -> domain <> "/embed/videoseries?list=" <> id
-    _ -> panic as "unreachable"
+    YoutubePlaylist(id) -> {
+      let src = domain <> "/embed/videoseries?list=" <> id
+      Ok(
+        iframe.responsive(src, aspect_ratio, [
+          attribute.attribute("allowfullscreen", "true"),
+          attribute.attribute(
+            "allow",
+            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+          ),
+        ]),
+      )
+    }
+    _ -> Error(Nil)
   }
-
-  let aspect_ratio = case config.youtube {
-    Some(embed.YoutubeConfig(aspect_ratio: Some(r), ..)) -> r
-    _ -> "56.25%"
-  }
-
-  iframe.responsive(src, aspect_ratio, [
-    attribute.attribute("allowfullscreen", "true"),
-    attribute.attribute(
-      "allow",
-      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
-    ),
-  ])
 }
 
 fn detect_youtube(url: Uri) -> Option(Embed) {

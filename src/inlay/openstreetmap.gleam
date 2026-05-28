@@ -14,7 +14,7 @@ pub fn detect(url: Uri) -> Option(Embed) {
   }
 }
 
-pub fn render(embed: Embed, config: Config) -> Element(msg) {
+pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
   case embed {
     MapLocation(zoom, lat, long) -> {
       let bbox = bounding_box(lat, long, zoom)
@@ -35,9 +35,9 @@ pub fn render(embed: Embed, config: Config) -> Element(msg) {
         Some(embed.OpenStreetMapConfig(aspect_ratio: Some(r))) -> r
         _ -> "75%"
       }
-      iframe.responsive(src, aspect_ratio, [])
+      Ok(iframe.responsive(src, aspect_ratio, []))
     }
-    _ -> panic as "unreachable"
+    _ -> Error(Nil)
   }
 }
 
@@ -62,11 +62,11 @@ fn cos_deg(degrees: Float) -> Float {
 }
 
 @external(erlang, "math", "cos")
-@external(javascript, "../../inlay_ffi.mjs", "cos")
+@external(javascript, "../inlay_ffi.mjs", "cos")
 fn cos(radians: Float) -> Float
 
 @external(erlang, "math", "pow")
-@external(javascript, "../../inlay_ffi.mjs", "pow")
+@external(javascript, "../inlay_ffi.mjs", "pow")
 fn pow(base: Float, exponent: Float) -> Float
 
 fn detect_osm(url: Uri) -> Option(Embed) {

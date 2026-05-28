@@ -1,8 +1,9 @@
 import gleam/option.{None, Some}
 import gleam/string
 import gleam/uri
+import inlay
 import inlay/embed.{InstagramPost, Post, Reel, TV}
-import inlay/provider/instagram
+import inlay/instagram
 import lustre/element
 
 pub fn post_url_test() {
@@ -42,7 +43,8 @@ pub fn non_instagram_url_returns_none_test() {
 
 pub fn render_instagram_post_test() {
   let e = InstagramPost(Post, "CxYaBcDeFgH")
-  let html = element.to_string(instagram.render(e, embed.default_config()))
+  let assert Ok(el) = instagram.render(e, inlay.default_config())
+  let html = element.to_string(el)
   let assert True = string.contains(html, "instagram-media")
   let assert True = string.contains(html, "instagram.com/p/CxYaBcDeFgH/")
   let assert True = string.contains(html, "instagram.com/embed.js")
@@ -50,6 +52,7 @@ pub fn render_instagram_post_test() {
 
 pub fn render_instagram_reel_test() {
   let e = InstagramPost(Reel, "CxYaBcDeFgH")
-  let html = element.to_string(instagram.render(e, embed.default_config()))
+  let assert Ok(el) = instagram.render(e, inlay.default_config())
+  let html = element.to_string(el)
   let assert True = string.contains(html, "instagram.com/reel/CxYaBcDeFgH/")
 }
