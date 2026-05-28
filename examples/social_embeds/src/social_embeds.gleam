@@ -62,39 +62,66 @@ fn home_view(_posts: List(Post(Nil))) -> Element(Nil) {
             [element.text("GitHub")],
           ),
         ]),
-        section("Mastodon", render_embed(
-          "https://mastodon.social/@iamkonstantin/116391354521208947",
-        )),
-        section("Pixelfed", render_embed(
-          "https://pixelfed.social/p/kkonstantin/788060252604363209",
-        )),
-        section("YouTube", render_embed(
-          "https://www.youtube.com/watch?v=XBu0m5JAUsA",
-        )),
-        section("Bluesky", render_embed(
-          "https://bsky.app/profile/did:plc:bwm3ipmp7fidz67iy4atioa5/post/3max7rufmvp2y",
-        )),
-        section("Spotify Artist", render_embed(
-          "https://open.spotify.com/artist/7GyhmlEy51sGUE09A5AWzc?si=Thh-F4JSTCmx3I5D5Ofljw",
-        )),
-        section("Spotify Track", render_embed(
-          "https://open.spotify.com/track/6dgOGIJjlUDGD7hJ0CbIJI?si=a7e23bbaf33b4b14",
-        )),
-        section("Spotify Playlist", render_embed(
-          "https://open.spotify.com/playlist/3jsMM3KminuLxYCFy6PKFu?si=Gsighi56SB6HmtDrO3vI-w",
-        )),
-        section("Apple Music Artist", render_embed(
-          "https://music.apple.com/be/artist/evanescence/42102393",
-        )),
-        section("Apple Music Album", render_embed(
-          "https://music.apple.com/be/album/bleed-out/1699386566",
-        )),
-        section("Apple Music Playlist", render_embed(
-          "https://music.apple.com/be/playlist/ramin-djawadi-essentials/pl.ac83e6e212d5400198f4c8c2110a2af1",
-        )),
-        section("OpenStreetMap", render_embed(
-          "https://www.openstreetmap.org/relation/19189218#map=17/50.8949/4.3416",
-        )),
+        section(
+          "Mastodon",
+          render_embed(
+            "https://mastodon.social/@iamkonstantin/116391354521208947",
+          ),
+        ),
+        section(
+          "Pixelfed",
+          render_embed(
+            "https://pixelfed.social/p/kkonstantin/788060252604363209",
+          ),
+        ),
+        section(
+          "YouTube",
+          render_embed("https://www.youtube.com/watch?v=XBu0m5JAUsA"),
+        ),
+        section(
+          "Bluesky",
+          render_embed(
+            "https://bsky.app/profile/did:plc:bwm3ipmp7fidz67iy4atioa5/post/3max7rufmvp2y",
+          ),
+        ),
+        section(
+          "Spotify Artist",
+          render_embed(
+            "https://open.spotify.com/artist/7GyhmlEy51sGUE09A5AWzc?si=Thh-F4JSTCmx3I5D5Ofljw",
+          ),
+        ),
+        section(
+          "Spotify Track",
+          render_embed(
+            "https://open.spotify.com/track/6dgOGIJjlUDGD7hJ0CbIJI?si=a7e23bbaf33b4b14",
+          ),
+        ),
+        section(
+          "Spotify Playlist",
+          render_embed(
+            "https://open.spotify.com/playlist/3jsMM3KminuLxYCFy6PKFu?si=Gsighi56SB6HmtDrO3vI-w",
+          ),
+        ),
+        section(
+          "Apple Music Artist",
+          render_embed("https://music.apple.com/be/artist/evanescence/42102393"),
+        ),
+        section(
+          "Apple Music Album",
+          render_embed("https://music.apple.com/be/album/bleed-out/1699386566"),
+        ),
+        section(
+          "Apple Music Playlist",
+          render_embed(
+            "https://music.apple.com/be/playlist/ramin-djawadi-essentials/pl.ac83e6e212d5400198f4c8c2110a2af1",
+          ),
+        ),
+        section(
+          "OpenStreetMap",
+          render_embed(
+            "https://www.openstreetmap.org/relation/19189218#map=17/50.8949/4.3416",
+          ),
+        ),
       ]),
     ]),
   ])

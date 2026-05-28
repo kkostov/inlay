@@ -39,23 +39,27 @@ pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
         None, None -> ""
       }
       let src = base <> params
-      Ok(iframe.responsive(src, aspect_ratio, [
-        attribute.attribute("allowfullscreen", "true"),
-        attribute.attribute(
-          "allow",
-          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
-        ),
-      ]))
+      Ok(
+        iframe.responsive(src, aspect_ratio, [
+          attribute.attribute("allowfullscreen", "true"),
+          attribute.attribute(
+            "allow",
+            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+          ),
+        ]),
+      )
     }
     YoutubePlaylist(id) -> {
       let src = domain <> "/embed/videoseries?list=" <> id
-      Ok(iframe.responsive(src, aspect_ratio, [
-        attribute.attribute("allowfullscreen", "true"),
-        attribute.attribute(
-          "allow",
-          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
-        ),
-      ]))
+      Ok(
+        iframe.responsive(src, aspect_ratio, [
+          attribute.attribute("allowfullscreen", "true"),
+          attribute.attribute(
+            "allow",
+            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+          ),
+        ]),
+      )
     }
     _ -> Error(Nil)
   }

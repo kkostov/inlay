@@ -20,30 +20,34 @@ pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
       case resolve_handle(handle, config) {
         Ok(did) -> {
           let at_uri = "at://" <> did <> "/app.bsky.feed.post/" <> rkey
-          Ok(html.div([], [
-            html.blockquote(
-              [
-                attribute.class("bluesky-embed"),
-                attribute.attribute("data-bluesky-uri", at_uri),
-              ],
-              [html.a([attribute.href(post_url)], [element.text(post_url)])],
-            ),
-            html.script(
-              [
-                attribute.src("https://embed.bsky.app/static/embed.js"),
-                attribute.attribute("async", "true"),
-                attribute.attribute("charset", "utf-8"),
-              ],
-              "",
-            ),
-          ]))
+          Ok(
+            html.div([], [
+              html.blockquote(
+                [
+                  attribute.class("bluesky-embed"),
+                  attribute.attribute("data-bluesky-uri", at_uri),
+                ],
+                [html.a([attribute.href(post_url)], [element.text(post_url)])],
+              ),
+              html.script(
+                [
+                  attribute.src("https://embed.bsky.app/static/embed.js"),
+                  attribute.attribute("async", "true"),
+                  attribute.attribute("charset", "utf-8"),
+                ],
+                "",
+              ),
+            ]),
+          )
         }
         Error(_) -> {
-          Ok(html.div([], [
-            html.blockquote([attribute.class("bluesky-embed")], [
-              html.a([attribute.href(post_url)], [element.text(post_url)]),
+          Ok(
+            html.div([], [
+              html.blockquote([attribute.class("bluesky-embed")], [
+                html.a([attribute.href(post_url)], [element.text(post_url)]),
+              ]),
             ]),
-          ]))
+          )
         }
       }
     }

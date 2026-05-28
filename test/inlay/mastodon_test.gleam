@@ -10,10 +10,7 @@ fn mastodon_config() -> embed.MastodonConfig {
 }
 
 fn full_config() -> embed.Config {
-  embed.Config(
-    ..embed.default_config(),
-    mastodon: Some(mastodon_config()),
-  )
+  embed.Config(..embed.default_config(), mastodon: Some(mastodon_config()))
 }
 
 pub fn standard_mastodon_url_test() {

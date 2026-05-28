@@ -50,24 +50,26 @@ pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
         <> likes_str
         <> "&layout="
         <> layout_str
-      Ok(html.div([], [
-        html.iframe([
-          attribute.attribute("title", "Pixelfed Post Embed"),
-          attribute.src(src),
-          attribute.class("pixelfed__embed"),
-          attribute.styles([#("max-width", "100%"), #("border", "0")]),
-          attribute.width(width),
-          attribute.attribute("allowfullscreen", "allowfullscreen"),
+      Ok(
+        html.div([], [
+          html.iframe([
+            attribute.attribute("title", "Pixelfed Post Embed"),
+            attribute.src(src),
+            attribute.class("pixelfed__embed"),
+            attribute.styles([#("max-width", "100%"), #("border", "0")]),
+            attribute.width(width),
+            attribute.attribute("allowfullscreen", "allowfullscreen"),
+          ]),
+          html.script(
+            [
+              attribute.src("https://" <> server <> "/embed.js"),
+              attribute.attribute("async", "true"),
+              attribute.attribute("defer", "true"),
+            ],
+            "",
+          ),
         ]),
-        html.script(
-          [
-            attribute.src("https://" <> server <> "/embed.js"),
-            attribute.attribute("async", "true"),
-            attribute.attribute("defer", "true"),
-          ],
-          "",
-        ),
-      ]))
+      )
     }
     _ -> Error(Nil)
   }

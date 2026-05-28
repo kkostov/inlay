@@ -22,24 +22,26 @@ pub fn render(embed: Embed, _config: Config) -> Result(Element(msg), Nil) {
       }
       let permalink =
         "https://www.instagram.com/" <> type_segment <> "/" <> id <> "/"
-      Ok(html.div([], [
-        html.blockquote(
-          [
-            attribute.class("instagram-media"),
-            attribute.attribute("data-instgrm-permalink", permalink),
-          ],
-          [
-            html.a([attribute.href(permalink)], [element.text(permalink)]),
-          ],
-        ),
-        html.script(
-          [
-            attribute.src("https://www.instagram.com/embed.js"),
-            attribute.attribute("async", "true"),
-          ],
-          "",
-        ),
-      ]))
+      Ok(
+        html.div([], [
+          html.blockquote(
+            [
+              attribute.class("instagram-media"),
+              attribute.attribute("data-instgrm-permalink", permalink),
+            ],
+            [
+              html.a([attribute.href(permalink)], [element.text(permalink)]),
+            ],
+          ),
+          html.script(
+            [
+              attribute.src("https://www.instagram.com/embed.js"),
+              attribute.attribute("async", "true"),
+            ],
+            "",
+          ),
+        ]),
+      )
     }
     _ -> Error(Nil)
   }

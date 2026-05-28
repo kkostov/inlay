@@ -27,16 +27,19 @@ pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
     TwitchChannel(name) -> {
       let src =
         "https://player.twitch.tv/?channel=" <> name <> "&parent=" <> parent
-      Ok(iframe.responsive(src, aspect_ratio, [
-        attribute.attribute("allowfullscreen", "true"),
-      ]))
+      Ok(
+        iframe.responsive(src, aspect_ratio, [
+          attribute.attribute("allowfullscreen", "true"),
+        ]),
+      )
     }
     TwitchVideo(id) -> {
-      let src =
-        "https://player.twitch.tv/?video=" <> id <> "&parent=" <> parent
-      Ok(iframe.responsive(src, aspect_ratio, [
-        attribute.attribute("allowfullscreen", "true"),
-      ]))
+      let src = "https://player.twitch.tv/?video=" <> id <> "&parent=" <> parent
+      Ok(
+        iframe.responsive(src, aspect_ratio, [
+          attribute.attribute("allowfullscreen", "true"),
+        ]),
+      )
     }
     _ -> Error(Nil)
   }

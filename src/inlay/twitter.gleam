@@ -19,21 +19,23 @@ pub fn render(embed: Embed, _config: Config) -> Result(Element(msg), Nil) {
   case embed {
     Tweet(handle, id) -> {
       let tweet_url = "https://twitter.com/" <> handle <> "/status/" <> id
-      Ok(html.div([], [
-        html.blockquote([attribute.class("twitter-tweet")], [
-          html.a([attribute.href(tweet_url)], [
-            element.text(tweet_url),
+      Ok(
+        html.div([], [
+          html.blockquote([attribute.class("twitter-tweet")], [
+            html.a([attribute.href(tweet_url)], [
+              element.text(tweet_url),
+            ]),
           ]),
+          html.script(
+            [
+              attribute.src("https://platform.twitter.com/widgets.js"),
+              attribute.attribute("async", "true"),
+              attribute.attribute("charset", "utf-8"),
+            ],
+            "",
+          ),
         ]),
-        html.script(
-          [
-            attribute.src("https://platform.twitter.com/widgets.js"),
-            attribute.attribute("async", "true"),
-            attribute.attribute("charset", "utf-8"),
-          ],
-          "",
-        ),
-      ]))
+      )
     }
     _ -> Error(Nil)
   }

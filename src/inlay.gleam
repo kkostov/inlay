@@ -27,10 +27,9 @@ import gleam/uri.{type Uri}
 import inlay/apple_music
 import inlay/bluesky
 import inlay/embed.{
-  AppleMusicMedia, BlueskyPost, Config, InstagramPost, MapLocation,
-  MastodonPost, PixelfedPost, SoundCloudTrack, SpotifyMedia, TedTalk,
-  TikTokVideo, Tweet, TwitchChannel, TwitchVideo, VimeoVideo, YoutubePlaylist,
-  YoutubeVideo,
+  AppleMusicMedia, BlueskyPost, Config, InstagramPost, MapLocation, MastodonPost,
+  PixelfedPost, SoundCloudTrack, SpotifyMedia, TedTalk, TikTokVideo, Tweet,
+  TwitchChannel, TwitchVideo, VimeoVideo, YoutubePlaylist, YoutubeVideo,
 }
 import inlay/instagram
 import inlay/mastodon
@@ -261,7 +260,10 @@ pub fn no_twitch(config: Config) -> Config {
 }
 
 /// Enable OpenStreetMap embeds with the given configuration.
-pub fn openstreetmap(config: Config, osm_config: OpenStreetMapConfig) -> Config {
+pub fn openstreetmap(
+  config: Config,
+  osm_config: OpenStreetMapConfig,
+) -> Config {
   Config(..config, openstreetmap: Some(osm_config))
 }
 
@@ -281,7 +283,10 @@ pub fn no_ted(config: Config) -> Config {
 }
 
 /// Enable SoundCloud embeds with the given configuration.
-pub fn soundcloud(config: Config, soundcloud_config: SoundCloudConfig) -> Config {
+pub fn soundcloud(
+  config: Config,
+  soundcloud_config: SoundCloudConfig,
+) -> Config {
   Config(..config, soundcloud: Some(soundcloud_config))
 }
 

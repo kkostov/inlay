@@ -20,13 +20,15 @@ pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
         Some(embed.TedConfig(aspect_ratio: Some(r))) -> r
         _ -> "56.25%"
       }
-      Ok(iframe.responsive(src, aspect_ratio, [
-        attribute.attribute("allowfullscreen", "true"),
-        attribute.attribute(
-          "allow",
-          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
-        ),
-      ]))
+      Ok(
+        iframe.responsive(src, aspect_ratio, [
+          attribute.attribute("allowfullscreen", "true"),
+          attribute.attribute(
+            "allow",
+            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+          ),
+        ]),
+      )
     }
     _ -> Error(Nil)
   }

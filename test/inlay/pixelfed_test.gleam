@@ -13,10 +13,7 @@ fn pixelfed_config() -> embed.PixelfedConfig {
 }
 
 fn full_config() -> embed.Config {
-  embed.Config(
-    ..embed.default_config(),
-    pixelfed: Some(pixelfed_config()),
-  )
+  embed.Config(..embed.default_config(), pixelfed: Some(pixelfed_config()))
 }
 
 fn compact_config() -> embed.PixelfedConfig {
@@ -24,10 +21,7 @@ fn compact_config() -> embed.PixelfedConfig {
 }
 
 fn full_compact_config() -> embed.Config {
-  embed.Config(
-    ..embed.default_config(),
-    pixelfed: Some(compact_config()),
-  )
+  embed.Config(..embed.default_config(), pixelfed: Some(compact_config()))
 }
 
 pub fn standard_pixelfed_url_test() {

@@ -31,10 +31,15 @@ pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
         Some(embed.VimeoConfig(aspect_ratio: Some(r), ..)) -> r
         _ -> "56.25%"
       }
-      Ok(iframe.responsive(src, aspect_ratio, [
-        attribute.attribute("allowfullscreen", "true"),
-        attribute.attribute("allow", "autoplay; fullscreen; picture-in-picture"),
-      ]))
+      Ok(
+        iframe.responsive(src, aspect_ratio, [
+          attribute.attribute("allowfullscreen", "true"),
+          attribute.attribute(
+            "allow",
+            "autoplay; fullscreen; picture-in-picture",
+          ),
+        ]),
+      )
     }
     _ -> Error(Nil)
   }
