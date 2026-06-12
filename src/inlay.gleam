@@ -213,7 +213,8 @@ pub fn bluesky_resolver(
   config: BlueskyConfig,
   resolve: fn(String) -> Result(String, Nil),
 ) -> BlueskyConfig {
-  embed.BlueskyConfig(..config, resolve_handle: Some(resolve))
+  let embed.BlueskyConfig(..) = config
+  embed.BlueskyConfig(resolve_handle: Some(resolve))
 }
 
 /// Enable YouTube embeds with the given configuration.
