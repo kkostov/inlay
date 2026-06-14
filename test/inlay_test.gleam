@@ -1,3 +1,4 @@
+import gleam/dict
 import gleam/option.{None, Some}
 import gleam/string
 import gleeunit
@@ -129,7 +130,7 @@ pub fn pixelfed_detect_without_config_returns_none_test() {
 pub fn a_component_default_embeds_youtube_test() {
   let component = inlay.a_component_default()
   let el =
-    component("https://www.youtube.com/watch?v=dQw4w9WgXcQ", None, [
+    component(dict.new(), "https://www.youtube.com/watch?v=dQw4w9WgXcQ", None, [
       element.text("Watch this"),
     ])
   let html = element.to_string(el)
@@ -140,7 +141,9 @@ pub fn a_component_default_embeds_youtube_test() {
 pub fn a_component_default_falls_through_for_unknown_test() {
   let component = inlay.a_component_default()
   let el =
-    component("https://example.com", Some("Example"), [element.text("Example")])
+    component(dict.new(), "https://example.com", Some("Example"), [
+      element.text("Example"),
+    ])
   let html = element.to_string(el)
   let assert True = string.contains(html, "<a")
   let assert True = string.contains(html, "https://example.com")
@@ -148,9 +151,11 @@ pub fn a_component_default_falls_through_for_unknown_test() {
 }
 
 pub fn a_component_with_custom_fallback_test() {
-  let fallback = fn(href, _title, _children) { element.text("Link: " <> href) }
+  let fallback = fn(_attributes, href, _title, _children) {
+    element.text("Link: " <> href)
+  }
   let component = inlay.a_component(fallback)
-  let el = component("https://example.com", None, [])
+  let el = component(dict.new(), "https://example.com", None, [])
   let html = element.to_string(el)
   let assert True = string.contains(html, "Link: https://example.com")
 }
@@ -159,9 +164,9 @@ pub fn a_component_with_twitch_config_test() {
   let config =
     inlay.default_config()
     |> inlay.twitch(inlay.twitch_config("mysite.com"))
-  let fallback = fn(href, _title, _children) { element.text(href) }
+  let fallback = fn(_attributes, href, _title, _children) { element.text(href) }
   let component = inlay.a_component_with(config, fallback)
-  let el = component("https://www.twitch.tv/ninja", None, [])
+  let el = component(dict.new(), "https://www.twitch.tv/ninja", None, [])
   let html = element.to_string(el)
   let assert True = string.contains(html, "player.twitch.tv")
   let assert True = string.contains(html, "mysite.com")
