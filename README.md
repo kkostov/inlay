@@ -161,8 +161,6 @@ case inlay.embed("https://vimeo.com/148751763") {
 
 [Blogatto](https://blogat.to/)'s markdown renderer lets you replace how specific HTML tags are produced. Inlay provides a custom `<a>` tag handler - when the href points to an embeddable URL, the link is replaced with an embedded preview. Non-embeddable links pass through to a fallback function. You can intercept and further customize this behavior if needed.
 
-### `a_component_default()`
-
 Default handler with standard anchor fallback:
 
 ```gleam
@@ -172,9 +170,9 @@ let md =
   |> markdown.a(inlay.a_component_default())
 ```
 
-### `a_component(fallback)`
 
-If Inlay doesn't render an embed, you can control what happens to the link with a custom fallback.
+If Inlay doesn't render an embed (e.g. if the link is not an enabled social link or not an embed), you can control what happens to the link with a custom fallback component:
+
 
 For example, let's make sure external links open in a new tab:
 
@@ -196,6 +194,25 @@ let md =
   markdown.default()
   |> markdown.markdown_path("./blog")
   |> markdown.a(inlay.a_component(my_a))
+```
+
+
+You can also do this inline with a callback:
+
+```gleam
+let md =
+  markdown.default()
+  |> markdown.markdown_path("./blog")
+  |> markdown.a(
+        inlay.a_component_with(embed_config, fn(_attrs, href, title, children) {
+          let attrs = [attribute.href(href)]
+          let attrs = case title {
+            option.Some(t) -> [attribute.title(t), ..attrs]
+            option.None -> attrs
+          }
+          html.a(attrs, children)
+        }),
+      )
 ```
 
 ## Development
