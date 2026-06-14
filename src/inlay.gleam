@@ -22,6 +22,7 @@
 ////   |> inlay.mastodon(inlay.mastodon_config(["mastodon.social"]))
 //// ```
 
+import gleam/dict.{type Dict}
 import gleam/option.{type Option, None, Some}
 import gleam/uri.{type Uri}
 import inlay/apple_music
@@ -409,32 +410,46 @@ pub fn embed_with(url: String, config: Config) -> Option(Element(msg)) {
 /// and delegates to `fallback` for unrecognized ones.
 /// Uses the default configuration.
 pub fn a_component(
-  fallback: fn(String, Option(String), List(Element(msg))) -> Element(msg),
-) -> fn(String, Option(String), List(Element(msg))) -> Element(msg) {
+  fallback: fn(Dict(String, String), String, Option(String), List(Element(msg))) ->
+    Element(msg),
+) -> fn(Dict(String, String), String, Option(String), List(Element(msg))) ->
+  Element(msg) {
   a_component_with(default_config(), fallback)
 }
 
 /// Create an anchor component with a custom configuration.
 pub fn a_component_with(
   config: Config,
-  fallback: fn(String, Option(String), List(Element(msg))) -> Element(msg),
-) -> fn(String, Option(String), List(Element(msg))) -> Element(msg) {
-  fn(href: String, title: Option(String), children: List(Element(msg))) {
+  fallback: fn(Dict(String, String), String, Option(String), List(Element(msg))) ->
+    Element(msg),
+) -> fn(Dict(String, String), String, Option(String), List(Element(msg))) ->
+  Element(msg) {
+  fn(
+    attributes: Dict(String, String),
+    href: String,
+    title: Option(String),
+    children: List(Element(msg)),
+  ) {
     case embed_with(href, config) {
       Some(el) -> el
-      None -> fallback(href, title, children)
+      None -> fallback(attributes, href, title, children)
     }
   }
 }
 
 /// Create an anchor component using the default configuration and
 /// a standard `<a>` tag fallback.
-pub fn a_component_default() -> fn(String, Option(String), List(Element(msg))) ->
-  Element(msg) {
+pub fn a_component_default() -> fn(
+  Dict(String, String),
+  String,
+  Option(String),
+  List(Element(msg)),
+) -> Element(msg) {
   a_component(default_fallback)
 }
 
 fn default_fallback(
+  _attributes: Dict(String, String),
   href: String,
   title: Option(String),
   children: List(Element(msg)),
