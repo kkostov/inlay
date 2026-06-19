@@ -24,3 +24,6 @@ jobs:
       - run: |
           cd examples/social_embeds
           gleam run
+      - run: |
+          cd examples/components
+          gleam build --target javascript

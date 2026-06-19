@@ -24,27 +24,11 @@
 
 import gleam/dict.{type Dict}
 import gleam/option.{type Option, None, Some}
-import gleam/uri.{type Uri}
-import inlay/apple_music
-import inlay/bluesky
-import inlay/embed.{
-  AppleMusicMedia, BlueskyPost, Config, InstagramPost, MapLocation, MastodonPost,
-  PixelfedPost, SoundCloudTrack, SpotifyMedia, TedTalk, TikTokVideo, Tweet,
-  TwitchChannel, TwitchVideo, VimeoVideo, YoutubePlaylist, YoutubeVideo,
-}
-import inlay/instagram
-import inlay/mastodon
-import inlay/openstreetmap
-import inlay/pixelfed
-import inlay/soundcloud
-import inlay/spotify
-import inlay/ted
-import inlay/tiktok
-import inlay/twitch
-import inlay/twitter
-import inlay/vimeo
-import inlay/youtube
-import lustre/attribute
+import inlay/component
+import inlay/detect
+import inlay/embed.{Config}
+import lustre
+import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
 
@@ -374,20 +358,17 @@ pub fn detect(url: String) -> Option(Embed) {
 
 /// Detect an embeddable link from a URL using a custom configuration.
 pub fn detect_with(url: String, config: Config) -> Option(Embed) {
-  case uri.parse(url) {
-    Ok(parsed) -> do_detect(parsed, config)
-    Error(_) -> None
-  }
+  detect.detect_with(url, config)
 }
 
 /// Render a detected embed as HTML using the default configuration.
 pub fn render(embed: Embed) -> Element(msg) {
-  do_render(embed, default_config())
+  detect.render_with(embed, default_config())
 }
 
 /// Render a detected embed as HTML using a custom configuration.
 pub fn render_with(embed: Embed, config: Config) -> Element(msg) {
-  do_render(embed, config)
+  detect.render_with(embed, config)
 }
 
 /// Detect and render in one step using the default configuration.
@@ -462,72 +443,22 @@ fn default_fallback(
   html.a(attrs, children)
 }
 
-fn do_detect(url: Uri, config: Config) -> Option(Embed) {
-  use <- try_one_with(config.mastodon, url, mastodon.detect)
-  use <- try_one_with(config.pixelfed, url, pixelfed.detect)
-  use <- try_one(config.youtube, url, youtube.detect)
-  use <- try_one(config.ted, url, ted.detect)
-  use <- try_one(config.vimeo, url, vimeo.detect)
-  use <- try_one(config.spotify, url, spotify.detect)
-  use <- try_one(config.bluesky, url, bluesky.detect)
-  use <- try_one(config.twitch, url, twitch.detect)
-  use <- try_one(config.soundcloud, url, soundcloud.detect)
-  use <- try_one(config.twitter, url, twitter.detect)
-  use <- try_one(config.tiktok, url, tiktok.detect)
-  use <- try_one(config.instagram, url, instagram.detect)
-  use <- try_one(config.openstreetmap, url, openstreetmap.detect)
-  use <- try_one(config.apple_music, url, apple_music.detect)
-  None
+/// Register the `<inlay-embed url="…">` custom element with the given base
+/// configuration. Call this once from a browser `main`, then use the tag in your
+/// markup or [`embed_element`](#embed_element) in a Lustre view.
+///
+/// Registration is browser-only; on other targets it returns
+/// `lustre.NotABrowser`.
+pub fn configure(config: Config) -> Result(Nil, lustre.Error) {
+  component.configure(config)
 }
 
-fn do_render(embed: Embed, config: Config) -> Element(msg) {
-  let assert Ok(el) = case embed {
-    YoutubeVideo(..) | YoutubePlaylist(..) -> youtube.render(embed, config)
-    VimeoVideo(..) -> vimeo.render(embed, config)
-    SpotifyMedia(..) -> spotify.render(embed, config)
-    Tweet(..) -> twitter.render(embed, config)
-    TikTokVideo(..) -> tiktok.render(embed, config)
-    BlueskyPost(..) -> bluesky.render(embed, config)
-    InstagramPost(..) -> instagram.render(embed, config)
-    TwitchChannel(..) | TwitchVideo(..) -> twitch.render(embed, config)
-    MapLocation(..) -> openstreetmap.render(embed, config)
-    TedTalk(..) -> ted.render(embed, config)
-    SoundCloudTrack(..) -> soundcloud.render(embed, config)
-    MastodonPost(..) -> mastodon.render(embed, config)
-    PixelfedPost(..) -> pixelfed.render(embed, config)
-    AppleMusicMedia(..) -> apple_music.render(embed, config)
-  }
-  el
+/// Register `<inlay-embed>` with the default configuration.
+pub fn register() -> Result(Nil, lustre.Error) {
+  component.register()
 }
 
-fn try_one(
-  enabled: Option(a),
-  url: Uri,
-  detector: fn(Uri) -> Option(Embed),
-  next: fn() -> Option(Embed),
-) -> Option(Embed) {
-  case enabled {
-    Some(_) ->
-      case detector(url) {
-        Some(found) -> Some(found)
-        None -> next()
-      }
-    None -> next()
-  }
-}
-
-fn try_one_with(
-  enabled: Option(a),
-  url: Uri,
-  detector: fn(Uri, a) -> Option(Embed),
-  next: fn() -> Option(Embed),
-) -> Option(Embed) {
-  case enabled {
-    Some(cfg) ->
-      case detector(url, cfg) {
-        Some(found) -> Some(found)
-        None -> next()
-      }
-    None -> next()
-  }
+/// Render the `<inlay-embed>` custom-element tag with the given attributes.
+pub fn embed_element(attributes: List(Attribute(msg))) -> Element(msg) {
+  component.embed_element(attributes)
 }
