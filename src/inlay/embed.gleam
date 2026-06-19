@@ -65,8 +65,7 @@ pub type PixelfedLayout {
 /// Configuration controlling which providers are enabled and their settings.
 ///
 /// Each field is an `Option`: `Some(config)` enables the provider with the
-/// given settings, `None` disables it. Providers with no configuration
-/// options (Twitter, TikTok, Instagram) use `Option(Nil)`.
+/// given settings, `None` disables it.
 ///
 /// Use `default_config()` for sensible defaults or `new()` to start with
 /// all providers disabled and opt in selectively.
@@ -75,10 +74,10 @@ pub type Config {
     youtube: Option(YoutubeConfig),
     vimeo: Option(VimeoConfig),
     spotify: Option(SpotifyConfig),
-    twitter: Option(Nil),
-    tiktok: Option(Nil),
+    twitter: Option(TwitterConfig),
+    tiktok: Option(TikTokConfig),
     bluesky: Option(BlueskyConfig),
-    instagram: Option(Nil),
+    instagram: Option(InstagramConfig),
     twitch: Option(TwitchConfig),
     openstreetmap: Option(OpenStreetMapConfig),
     ted: Option(TedConfig),
@@ -111,9 +110,32 @@ pub type SpotifyConfig {
 /// Bluesky embed settings.
 ///
 /// The optional `resolve_handle` function converts a Bluesky handle
-/// (e.g. `"user.bsky.social"`) to a DID for richer embed rendering.
+/// (e.g. `"user.bsky.social"`) to a DID for richer embed rendering. `height`
+/// is the initial component-path iframe height before the embed reports its
+/// own size.
 pub type BlueskyConfig {
-  BlueskyConfig(resolve_handle: Option(fn(String) -> Result(String, Nil)))
+  BlueskyConfig(
+    resolve_handle: Option(fn(String) -> Result(String, Nil)),
+    height: Option(Int),
+  )
+}
+
+/// Twitter/X embed settings. `height` is the initial component-path iframe
+/// height before the embed reports its own size.
+pub type TwitterConfig {
+  TwitterConfig(height: Option(Int))
+}
+
+/// TikTok embed settings. `height` is the initial component-path iframe height
+/// before the embed reports its own size.
+pub type TikTokConfig {
+  TikTokConfig(height: Option(Int))
+}
+
+/// Instagram embed settings. `height` is the initial component-path iframe
+/// height before the embed reports its own size.
+pub type InstagramConfig {
+  InstagramConfig(height: Option(Int))
 }
 
 /// Twitch embed settings. The `parent` domain is required by Twitch's
@@ -138,16 +160,21 @@ pub type SoundCloudConfig {
 }
 
 /// Mastodon embed settings. Only posts from listed `servers` are detected.
+/// `width` sizes the static embed; `height` is the initial component-path
+/// iframe height before the embed reports its own size.
 pub type MastodonConfig {
-  MastodonConfig(servers: List(String), width: Option(Int))
+  MastodonConfig(servers: List(String), width: Option(Int), height: Option(Int))
 }
 
 /// Pixelfed embed settings. Only posts from listed `servers` are detected.
+/// `width` sizes the static embed; `height` is the initial component-path
+/// iframe height before the embed reports its own size.
 pub type PixelfedConfig {
   PixelfedConfig(
     servers: List(String),
     layout: PixelfedLayout,
     width: Option(Int),
+    height: Option(Int),
   )
 }
 
@@ -162,7 +189,22 @@ pub type AppleMusicConfig {
 
 /// Create a default Bluesky configuration with no handle resolver.
 pub fn bluesky_config() -> BlueskyConfig {
-  BlueskyConfig(resolve_handle: None)
+  BlueskyConfig(resolve_handle: None, height: None)
+}
+
+/// Create a default Twitter/X configuration.
+pub fn twitter_config() -> TwitterConfig {
+  TwitterConfig(height: None)
+}
+
+/// Create a default TikTok configuration.
+pub fn tiktok_config() -> TikTokConfig {
+  TikTokConfig(height: None)
+}
+
+/// Create a default Instagram configuration.
+pub fn instagram_config() -> InstagramConfig {
+  InstagramConfig(height: None)
 }
 
 /// Create a default YouTube configuration with privacy-enhanced mode enabled.
@@ -202,7 +244,7 @@ pub fn soundcloud_config() -> SoundCloudConfig {
 
 /// Create a Mastodon configuration for the given server allowlist.
 pub fn mastodon_config(servers: List(String)) -> MastodonConfig {
-  MastodonConfig(servers: servers, width: None)
+  MastodonConfig(servers: servers, width: None, height: None)
 }
 
 /// Create a Pixelfed configuration for the given server allowlist and layout.
@@ -210,7 +252,7 @@ pub fn pixelfed_config(
   servers: List(String),
   layout: PixelfedLayout,
 ) -> PixelfedConfig {
-  PixelfedConfig(servers: servers, layout: layout, width: None)
+  PixelfedConfig(servers: servers, layout: layout, width: None, height: None)
 }
 
 /// Create a default Apple Music configuration.
@@ -229,10 +271,10 @@ pub fn default_config() -> Config {
     youtube: Some(youtube_config()),
     vimeo: Some(vimeo_config()),
     spotify: Some(spotify_config()),
-    twitter: Some(Nil),
-    tiktok: Some(Nil),
+    twitter: Some(twitter_config()),
+    tiktok: Some(tiktok_config()),
     bluesky: Some(bluesky_config()),
-    instagram: Some(Nil),
+    instagram: Some(instagram_config()),
     twitch: None,
     openstreetmap: Some(openstreetmap_config()),
     ted: Some(ted_config()),

@@ -1,3 +1,4 @@
+import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/uri.{type Uri}
@@ -49,6 +50,10 @@ pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
         -> h
         _, _ -> 450
       }
+      let max_width = case config.apple_music {
+        Some(embed.AppleMusicConfig(width: Some(w), ..)) -> w
+        _ -> 660
+      }
       Ok(
         html.iframe([
           attribute.src(src),
@@ -63,7 +68,7 @@ pub fn render(embed: Embed, config: Config) -> Result(Element(msg), Nil) {
           ),
           attribute.styles([
             #("width", "100%"),
-            #("max-width", "660px"),
+            #("max-width", int.to_string(max_width) <> "px"),
             #("overflow", "hidden"),
             #("border-radius", "10px"),
             #("border", "0"),

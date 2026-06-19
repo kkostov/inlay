@@ -65,11 +65,15 @@ pub fn render_with(embed: Embed, config: Config) -> Element(msg) {
 /// the component itself because it depends on the resolved DID.
 pub fn render_inline_with(embed: Embed, config: Config) -> Element(msg) {
   case embed {
-    Tweet(_handle, id) -> inline.tweet_iframe(id)
-    InstagramPost(post_type, id) -> inline.instagram_iframe(post_type, id)
-    TikTokVideo(_username, id) -> inline.tiktok_iframe(id)
-    MastodonPost(server, user, id) -> inline.mastodon_iframe(server, user, id)
-    PixelfedPost(server, user, id) -> inline.pixelfed_iframe(server, user, id)
+    Tweet(_handle, id) -> inline.tweet_iframe(id, tweet_height(config))
+    InstagramPost(post_type, id) ->
+      inline.instagram_iframe(post_type, id, instagram_height(config))
+    TikTokVideo(_username, id) ->
+      inline.tiktok_iframe(id, tiktok_height(config))
+    MastodonPost(server, user, id) ->
+      inline.mastodon_iframe(server, user, id, mastodon_height(config))
+    PixelfedPost(server, user, id) ->
+      inline.pixelfed_iframe(server, user, id, pixelfed_height(config))
     YoutubeVideo(..)
     | YoutubePlaylist(..)
     | VimeoVideo(..)
@@ -81,6 +85,50 @@ pub fn render_inline_with(embed: Embed, config: Config) -> Element(msg) {
     | TedTalk(..)
     | SoundCloudTrack(..)
     | AppleMusicMedia(..) -> render_with(embed, config)
+  }
+}
+
+/// The initial component-path height for a Bluesky embed, from `config` with a
+/// default of `600`.
+pub fn bluesky_height(config: Config) -> Int {
+  case config.bluesky {
+    Some(embed.BlueskyConfig(height:, ..)) -> option.unwrap(height, 600)
+    None -> 600
+  }
+}
+
+fn tweet_height(config: Config) -> Int {
+  case config.twitter {
+    Some(embed.TwitterConfig(height:)) -> option.unwrap(height, 550)
+    None -> 550
+  }
+}
+
+fn instagram_height(config: Config) -> Int {
+  case config.instagram {
+    Some(embed.InstagramConfig(height:)) -> option.unwrap(height, 700)
+    None -> 700
+  }
+}
+
+fn tiktok_height(config: Config) -> Int {
+  case config.tiktok {
+    Some(embed.TikTokConfig(height:)) -> option.unwrap(height, 750)
+    None -> 750
+  }
+}
+
+fn mastodon_height(config: Config) -> Int {
+  case config.mastodon {
+    Some(embed.MastodonConfig(height:, ..)) -> option.unwrap(height, 400)
+    None -> 400
+  }
+}
+
+fn pixelfed_height(config: Config) -> Int {
+  case config.pixelfed {
+    Some(embed.PixelfedConfig(height:, ..)) -> option.unwrap(height, 600)
+    None -> 600
   }
 }
 

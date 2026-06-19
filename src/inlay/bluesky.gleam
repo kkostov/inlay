@@ -100,7 +100,8 @@ fn resolve_handle(handle: String, config: Config) -> Result(String, Nil) {
     True -> Ok(handle)
     False ->
       case config.bluesky {
-        Some(BlueskyConfig(resolve_handle: Some(resolver))) -> resolver(handle)
+        Some(BlueskyConfig(resolve_handle: Some(resolver), ..)) ->
+          resolver(handle)
         _ -> Error(Nil)
       }
   }

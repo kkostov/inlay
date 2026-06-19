@@ -22,22 +22,23 @@ import lustre/element/html
 pub const resize_class = "inlay-embed-frame"
 
 /// Render a Bluesky post as a self-contained embed iframe for a resolved DID.
-pub fn bluesky_iframe(did: String, rkey: String) -> Element(msg) {
+pub fn bluesky_iframe(did: String, rkey: String, height: Int) -> Element(msg) {
   let src =
     "https://embed.bsky.app/embed/" <> did <> "/app.bsky.feed.post/" <> rkey
-  frame(src, "Bluesky post", 600)
+  frame(src, "Bluesky post", height)
 }
 
 /// Render a Tweet as a self-contained embed iframe.
-pub fn tweet_iframe(id: String) -> Element(msg) {
+pub fn tweet_iframe(id: String, height: Int) -> Element(msg) {
   let src = "https://platform.twitter.com/embed/Tweet.html?id=" <> id
-  frame(src, "Tweet", 550)
+  frame(src, "Tweet", height)
 }
 
 /// Render an Instagram post as a self-contained embed iframe.
 pub fn instagram_iframe(
   post_type: embed.InstagramPostType,
   id: String,
+  height: Int,
 ) -> Element(msg) {
   let type_segment = case post_type {
     Post -> "p"
@@ -46,13 +47,13 @@ pub fn instagram_iframe(
   }
   let src =
     "https://www.instagram.com/" <> type_segment <> "/" <> id <> "/embed/"
-  frame(src, "Instagram post", 700)
+  frame(src, "Instagram post", height)
 }
 
 /// Render a TikTok video as a self-contained embed iframe.
-pub fn tiktok_iframe(id: String) -> Element(msg) {
+pub fn tiktok_iframe(id: String, height: Int) -> Element(msg) {
   let src = "https://www.tiktok.com/embed/v2/" <> id
-  frame(src, "TikTok video", 750)
+  frame(src, "TikTok video", height)
 }
 
 /// Render a Mastodon post as a self-contained embed iframe.
@@ -60,9 +61,10 @@ pub fn mastodon_iframe(
   server: String,
   user: String,
   id: String,
+  height: Int,
 ) -> Element(msg) {
   let src = "https://" <> server <> "/@" <> user <> "/" <> id <> "/embed"
-  frame(src, "Mastodon post", 400)
+  frame(src, "Mastodon post", height)
 }
 
 /// Render a Pixelfed post as a self-contained embed iframe.
@@ -70,12 +72,13 @@ pub fn pixelfed_iframe(
   server: String,
   user: String,
   id: String,
+  height: Int,
 ) -> Element(msg) {
   let src = "https://" <> server <> "/p/" <> user <> "/" <> id <> "/embed"
-  frame(src, "Pixelfed post", 600)
+  frame(src, "Pixelfed post", height)
 }
 
-fn frame(src: String, title: String, default_height: Int) -> Element(msg) {
+fn frame(src: String, title: String, height: Int) -> Element(msg) {
   html.iframe([
     attribute.attribute("title", title),
     attribute.src(src),
@@ -83,7 +86,7 @@ fn frame(src: String, title: String, default_height: Int) -> Element(msg) {
     attribute.styles([
       #("width", "100%"),
       #("border", "0"),
-      #("height", int.to_string(default_height) <> "px"),
+      #("height", int.to_string(height) <> "px"),
     ]),
     attribute.attribute("scrolling", "no"),
     attribute.attribute("allowfullscreen", "true"),

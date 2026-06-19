@@ -129,9 +129,10 @@ pub fn view(config: Config, model: Model) -> Element(msg) {
       case detect.detect_with(url, config) {
         Some(BlueskyPost(handle, rkey)) ->
           case model.state {
-            Resolved(did) -> inline.bluesky_iframe(did, rkey)
+            Resolved(did) ->
+              inline.bluesky_iframe(did, rkey, detect.bluesky_height(config))
             Resolving | Failed -> bluesky.fallback_view(handle, rkey)
-            Static -> bluesky_static_view(handle, rkey)
+            Static -> bluesky_static_view(config, handle, rkey)
           }
         Some(found) -> detect.render_inline_with(found, config)
         None -> link(url)
@@ -146,9 +147,13 @@ fn link(url: String) -> Element(msg) {
 /// Render a Bluesky post that needs no handle resolution. A handle already in
 /// `did:` form is itself the DID, so the embed iframe renders directly;
 /// anything else falls back to a link.
-fn bluesky_static_view(handle: String, rkey: String) -> Element(msg) {
+fn bluesky_static_view(
+  config: Config,
+  handle: String,
+  rkey: String,
+) -> Element(msg) {
   case bluesky.needs_resolution(handle) {
-    False -> inline.bluesky_iframe(handle, rkey)
+    False -> inline.bluesky_iframe(handle, rkey, detect.bluesky_height(config))
     True -> bluesky.fallback_view(handle, rkey)
   }
 }

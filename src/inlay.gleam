@@ -87,9 +87,33 @@ pub type AppleMusicConfig =
 pub type AppleMusicMediaType =
   embed.AppleMusicMediaType
 
+pub type TwitterConfig =
+  embed.TwitterConfig
+
+pub type TikTokConfig =
+  embed.TikTokConfig
+
+pub type InstagramConfig =
+  embed.InstagramConfig
+
 /// Create a default Bluesky configuration with no handle resolver.
 pub fn bluesky_config() -> BlueskyConfig {
   embed.bluesky_config()
+}
+
+/// Create a default Twitter/X configuration.
+pub fn twitter_config() -> TwitterConfig {
+  embed.twitter_config()
+}
+
+/// Create a default TikTok configuration.
+pub fn tiktok_config() -> TikTokConfig {
+  embed.tiktok_config()
+}
+
+/// Create a default Instagram configuration.
+pub fn instagram_config() -> InstagramConfig {
+  embed.instagram_config()
 }
 
 /// Create a default YouTube configuration with privacy-enhanced mode enabled.
@@ -198,8 +222,153 @@ pub fn bluesky_resolver(
   config: BlueskyConfig,
   resolve: fn(String) -> Result(String, Nil),
 ) -> BlueskyConfig {
-  let embed.BlueskyConfig(..) = config
-  embed.BlueskyConfig(resolve_handle: Some(resolve))
+  embed.BlueskyConfig(..config, resolve_handle: Some(resolve))
+}
+
+/// Set the CSS aspect ratio (e.g. `"56.25%"`) for responsive YouTube embeds.
+pub fn youtube_aspect_ratio(
+  config: YoutubeConfig,
+  aspect_ratio: String,
+) -> YoutubeConfig {
+  embed.YoutubeConfig(..config, aspect_ratio: Some(aspect_ratio))
+}
+
+/// Set the CSS aspect ratio (e.g. `"56.25%"`) for responsive Vimeo embeds.
+pub fn vimeo_aspect_ratio(
+  config: VimeoConfig,
+  aspect_ratio: String,
+) -> VimeoConfig {
+  embed.VimeoConfig(..config, aspect_ratio: Some(aspect_ratio))
+}
+
+/// Set the CSS aspect ratio (e.g. `"56.25%"`) for responsive Twitch embeds.
+pub fn twitch_aspect_ratio(
+  config: TwitchConfig,
+  aspect_ratio: String,
+) -> TwitchConfig {
+  embed.TwitchConfig(..config, aspect_ratio: Some(aspect_ratio))
+}
+
+/// Set the CSS aspect ratio (e.g. `"56.25%"`) for responsive TED embeds.
+pub fn ted_aspect_ratio(config: TedConfig, aspect_ratio: String) -> TedConfig {
+  let embed.TedConfig(..) = config
+  embed.TedConfig(aspect_ratio: Some(aspect_ratio))
+}
+
+/// Set the CSS aspect ratio (e.g. `"56.25%"`) for responsive OpenStreetMap
+/// embeds.
+pub fn openstreetmap_aspect_ratio(
+  config: OpenStreetMapConfig,
+  aspect_ratio: String,
+) -> OpenStreetMapConfig {
+  let embed.OpenStreetMapConfig(..) = config
+  embed.OpenStreetMapConfig(aspect_ratio: Some(aspect_ratio))
+}
+
+/// Set the Spotify embed width in pixels.
+pub fn spotify_width(config: SpotifyConfig, width: Int) -> SpotifyConfig {
+  embed.SpotifyConfig(..config, width: Some(width))
+}
+
+/// Set the Spotify embed height in pixels for albums, playlists, artists,
+/// episodes, and shows.
+pub fn spotify_height(config: SpotifyConfig, height: Int) -> SpotifyConfig {
+  embed.SpotifyConfig(..config, height: Some(height))
+}
+
+/// Set the Spotify embed height in pixels for individual tracks.
+pub fn spotify_track_height(
+  config: SpotifyConfig,
+  track_height: Int,
+) -> SpotifyConfig {
+  embed.SpotifyConfig(..config, track_height: Some(track_height))
+}
+
+/// Set the SoundCloud embed width in pixels.
+pub fn soundcloud_width(
+  config: SoundCloudConfig,
+  width: Int,
+) -> SoundCloudConfig {
+  embed.SoundCloudConfig(..config, width: Some(width))
+}
+
+/// Set the SoundCloud embed height in pixels.
+pub fn soundcloud_height(
+  config: SoundCloudConfig,
+  height: Int,
+) -> SoundCloudConfig {
+  embed.SoundCloudConfig(..config, height: Some(height))
+}
+
+/// Set the Apple Music embed maximum width in pixels.
+pub fn apple_music_width(
+  config: AppleMusicConfig,
+  width: Int,
+) -> AppleMusicConfig {
+  embed.AppleMusicConfig(..config, width: Some(width))
+}
+
+/// Set the Apple Music embed height in pixels for albums, artists, playlists,
+/// and music videos.
+pub fn apple_music_height(
+  config: AppleMusicConfig,
+  height: Int,
+) -> AppleMusicConfig {
+  embed.AppleMusicConfig(..config, height: Some(height))
+}
+
+/// Set the Apple Music embed height in pixels for individual songs.
+pub fn apple_music_song_height(
+  config: AppleMusicConfig,
+  song_height: Int,
+) -> AppleMusicConfig {
+  embed.AppleMusicConfig(..config, song_height: Some(song_height))
+}
+
+/// Set the Mastodon static embed width in pixels.
+pub fn mastodon_width(config: MastodonConfig, width: Int) -> MastodonConfig {
+  embed.MastodonConfig(..config, width: Some(width))
+}
+
+/// Set the initial Mastodon component-path iframe height in pixels.
+pub fn mastodon_height(config: MastodonConfig, height: Int) -> MastodonConfig {
+  embed.MastodonConfig(..config, height: Some(height))
+}
+
+/// Set the Pixelfed static embed width in pixels.
+pub fn pixelfed_width(config: PixelfedConfig, width: Int) -> PixelfedConfig {
+  embed.PixelfedConfig(..config, width: Some(width))
+}
+
+/// Set the initial Pixelfed component-path iframe height in pixels.
+pub fn pixelfed_height(config: PixelfedConfig, height: Int) -> PixelfedConfig {
+  embed.PixelfedConfig(..config, height: Some(height))
+}
+
+/// Set the initial Bluesky component-path iframe height in pixels.
+pub fn bluesky_height(config: BlueskyConfig, height: Int) -> BlueskyConfig {
+  embed.BlueskyConfig(..config, height: Some(height))
+}
+
+/// Set the initial Twitter/X component-path iframe height in pixels.
+pub fn twitter_height(config: TwitterConfig, height: Int) -> TwitterConfig {
+  let embed.TwitterConfig(..) = config
+  embed.TwitterConfig(height: Some(height))
+}
+
+/// Set the initial TikTok component-path iframe height in pixels.
+pub fn tiktok_height(config: TikTokConfig, height: Int) -> TikTokConfig {
+  let embed.TikTokConfig(..) = config
+  embed.TikTokConfig(height: Some(height))
+}
+
+/// Set the initial Instagram component-path iframe height in pixels.
+pub fn instagram_height(
+  config: InstagramConfig,
+  height: Int,
+) -> InstagramConfig {
+  let embed.InstagramConfig(..) = config
+  embed.InstagramConfig(height: Some(height))
 }
 
 /// Enable YouTube embeds with the given configuration.
@@ -232,9 +401,9 @@ pub fn no_spotify(config: Config) -> Config {
   Config(..config, spotify: None)
 }
 
-/// Enable Twitter/X embeds.
-pub fn twitter(config: Config) -> Config {
-  Config(..config, twitter: Some(Nil))
+/// Enable Twitter/X embeds with the given configuration.
+pub fn twitter(config: Config, twitter_config: TwitterConfig) -> Config {
+  Config(..config, twitter: Some(twitter_config))
 }
 
 /// Disable Twitter/X embeds.
@@ -242,9 +411,9 @@ pub fn no_twitter(config: Config) -> Config {
   Config(..config, twitter: None)
 }
 
-/// Enable TikTok embeds.
-pub fn tiktok(config: Config) -> Config {
-  Config(..config, tiktok: Some(Nil))
+/// Enable TikTok embeds with the given configuration.
+pub fn tiktok(config: Config, tiktok_config: TikTokConfig) -> Config {
+  Config(..config, tiktok: Some(tiktok_config))
 }
 
 /// Disable TikTok embeds.
@@ -262,9 +431,9 @@ pub fn no_bluesky(config: Config) -> Config {
   Config(..config, bluesky: None)
 }
 
-/// Enable Instagram embeds.
-pub fn instagram(config: Config) -> Config {
-  Config(..config, instagram: Some(Nil))
+/// Enable Instagram embeds with the given configuration.
+pub fn instagram(config: Config, instagram_config: InstagramConfig) -> Config {
+  Config(..config, instagram: Some(instagram_config))
 }
 
 /// Disable Instagram embeds.

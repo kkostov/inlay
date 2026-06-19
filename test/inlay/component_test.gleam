@@ -89,6 +89,67 @@ pub fn embed_component_renders_tiktok_as_iframe_test() {
   let assert False = string.contains(html, "tiktok.com/embed.js")
 }
 
+pub fn embed_component_mastodon_height_override_test() {
+  let config =
+    inlay.new()
+    |> inlay.mastodon(
+      inlay.mastodon_config(["mastodon.social"])
+      |> inlay.mastodon_height(321),
+    )
+  let html = render_url(config, "https://mastodon.social/@user/123456")
+  let assert True = string.contains(html, "height:321px")
+}
+
+pub fn embed_component_pixelfed_height_override_test() {
+  let config =
+    inlay.new()
+    |> inlay.pixelfed(
+      inlay.pixelfed_config(
+        ["pixelfed.social"],
+        inlay.pixelfed_full(caption: True, likes: True),
+      )
+      |> inlay.pixelfed_height(543),
+    )
+  let html = render_url(config, "https://pixelfed.social/p/user/789")
+  let assert True = string.contains(html, "height:543px")
+}
+
+pub fn embed_component_twitter_height_override_test() {
+  let config =
+    inlay.default_config()
+    |> inlay.twitter(inlay.twitter_config() |> inlay.twitter_height(987))
+  let html = render_url(config, "https://twitter.com/user/status/123456")
+  let assert True = string.contains(html, "height:987px")
+}
+
+pub fn embed_component_tiktok_height_override_test() {
+  let config =
+    inlay.default_config()
+    |> inlay.tiktok(inlay.tiktok_config() |> inlay.tiktok_height(820))
+  let html = render_url(config, "https://www.tiktok.com/@user/video/123456")
+  let assert True = string.contains(html, "height:820px")
+}
+
+pub fn embed_component_instagram_height_override_test() {
+  let config =
+    inlay.default_config()
+    |> inlay.instagram(inlay.instagram_config() |> inlay.instagram_height(640))
+  let html = render_url(config, "https://www.instagram.com/p/ABC123/")
+  let assert True = string.contains(html, "height:640px")
+}
+
+pub fn embed_component_bluesky_height_override_test() {
+  let config =
+    inlay.default_config()
+    |> inlay.bluesky(inlay.bluesky_config() |> inlay.bluesky_height(654))
+  let html =
+    render_url(
+      config,
+      "https://bsky.app/profile/did:plc:z72i7hdynmk6r22z27h6tvur/post/3jt5abc",
+    )
+  let assert True = string.contains(html, "height:654px")
+}
+
 pub fn embed_component_unknown_url_falls_back_to_link_test() {
   let html = render_url(embed.default_config(), "https://www.example.com/page")
   let assert True =

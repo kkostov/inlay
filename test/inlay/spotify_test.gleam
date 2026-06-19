@@ -85,3 +85,18 @@ pub fn render_album_test() {
     string.contains(html, "open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3")
   let assert True = string.contains(html, "height=\"352\"")
 }
+
+pub fn render_custom_size_test() {
+  let config =
+    inlay.default_config()
+    |> inlay.spotify(
+      inlay.spotify_config()
+      |> inlay.spotify_width(500)
+      |> inlay.spotify_track_height(80),
+    )
+  let e = SpotifyMedia(SpotifyTrack, "6rqhFgbbKwnb9MLmUQDhG6")
+  let assert Ok(el) = spotify.render(e, config)
+  let html = element.to_string(el)
+  let assert True = string.contains(html, "width=\"500\"")
+  let assert True = string.contains(html, "height=\"80\"")
+}

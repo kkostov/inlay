@@ -104,6 +104,20 @@ pub fn render_album_test() {
   let html = element.to_string(el)
   let assert True = string.contains(html, "embed.music.apple.com")
   let assert True = string.contains(html, "height=\"450\"")
+  let assert True = string.contains(html, "max-width:660px")
+}
+
+pub fn render_custom_max_width_test() {
+  let e = AppleMusicMedia(AppleMusicAlbum, "be", "bleed-out", "1699386566")
+  let config =
+    inlay.default_config()
+    |> inlay.apple_music(
+      inlay.apple_music_config()
+      |> inlay.apple_music_width(720),
+    )
+  let assert Ok(el) = apple_music.render(e, config)
+  let html = element.to_string(el)
+  let assert True = string.contains(html, "max-width:720px")
 }
 
 pub fn render_artist_test() {
