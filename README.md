@@ -18,6 +18,57 @@ Mastodon, Pixelfed, Apple Music, Bluesky, Spotify, Instagram, OpenStreetMap, Sou
 gleam add inlay
 ```
 
+## Components
+
+In a Lustre application, you can use the `<inlay-embed url="…">` component to embed a url. Inlay will try to detect the provider from the URL and renders the embed
+
+
+1. Configure inlay (see below for more configuration options).
+
+```gleam
+import inlay
+
+pub fn main() {
+  let config =
+    inlay.default_config()
+    |> inlay.mastodon(inlay.mastodon_config(["mastodon.social"]))
+
+  let assert Ok(_) = inlay.configure(config)
+}
+```
+
+
+2. Use the `inlay-embed` component with an embed url:
+
+
+```html
+<inlay-embed url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></inlay-embed>
+<inlay-embed url="https://mastodon.social/@iamkonstantin/116391354521208947"></inlay-embed>
+<inlay-embed url="https://bsky.app/profile/did:plc:bwm3ipmp7fidz67iy4atioa5/post/3max7rufmvp2y"></inlay-embed>
+```
+
+`configure` takes a [`Config`](#configuration) which lets you setup if and how embeds appear for each platform. `inlay.register()` is shorthand for `configure(default_config())`.
+
+
+A few rendering options can be tuned per embed with optional attributes: `no-cookie` (YouTube), `parent` (Twitch), `aspect-ratio`, etc:
+
+```html
+<inlay-embed url="https://www.twitch.tv/somechannel" parent="mysite.com"></inlay-embed>
+```
+
+Inside a Lustre view, use the helper instead of a raw tag:
+
+```gleam
+import inlay
+import lustre/attribute
+
+inlay.embed_element([
+  attribute.attribute("url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
+])
+```
+
+> The `<inlay-embed>` component runs in the browser. To embed links in server-rendered HTML (like [Blogatto](#blogatto)), use the functions below instead.
+
 ## Configuration
 
 Inlay only embeds URLs whose provider you've enabled - everything else passes through as a plain link.
@@ -67,9 +118,9 @@ let config =
 
 Bluesky embeds need an AT Protocol URI (`at://did:plc:.../app.bsky.feed.post/...`) to render the rich embed widget. When the post URL already contains a DID handle (e.g. `did:plc:z72i7hdynmk6r22z27h6tvur`), the embed works out of the box with the default config.
 
-For human-readable handles (e.g. `alice.bsky.social`) or custom domains (e.g. `flowvi.be`), you need to provide a `resolve_handle` function that resolves the handle to a DID.
+For human-readable handles (e.g. `alice.bsky.social`) or custom domains (e.g. `flowvi.be`), the handle has to be looked up first. The `<inlay-embed>` component does this for you automatically.
 
-Here is an example (but your implementation may depend on whether you're targetting javascript or erlang):
+When you render with the functions instead (for example for static Blogatto pages), provide a `resolve_handle` function that turns the handle into a DID:
 
 ```gleam
 import gleam/dynamic/decode

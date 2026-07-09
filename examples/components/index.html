@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inlay custom elements</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        max-width: 720px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        color: #2c2c2c;
+      }
+      .embed {
+        margin-bottom: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <h2>Raw tag (registered by configure)</h2>
+    <inlay-embed
+      url="https://open.spotify.com/track/6dgOGIJjlUDGD7hJ0CbIJI"
+    ></inlay-embed>
+
+    <script type="module">
+      import { main } from "./build/dev/javascript/inlay_components/inlay_components.mjs";
+      main();
+    </script>
+  </body>
+</html>

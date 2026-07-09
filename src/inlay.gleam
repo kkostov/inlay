@@ -24,27 +24,11 @@
 
 import gleam/dict.{type Dict}
 import gleam/option.{type Option, None, Some}
-import gleam/uri.{type Uri}
-import inlay/apple_music
-import inlay/bluesky
-import inlay/embed.{
-  AppleMusicMedia, BlueskyPost, Config, InstagramPost, MapLocation, MastodonPost,
-  PixelfedPost, SoundCloudTrack, SpotifyMedia, TedTalk, TikTokVideo, Tweet,
-  TwitchChannel, TwitchVideo, VimeoVideo, YoutubePlaylist, YoutubeVideo,
-}
-import inlay/instagram
-import inlay/mastodon
-import inlay/openstreetmap
-import inlay/pixelfed
-import inlay/soundcloud
-import inlay/spotify
-import inlay/ted
-import inlay/tiktok
-import inlay/twitch
-import inlay/twitter
-import inlay/vimeo
-import inlay/youtube
-import lustre/attribute
+import inlay/component
+import inlay/detect
+import inlay/embed.{Config}
+import lustre
+import lustre/attribute.{type Attribute}
 import lustre/element.{type Element}
 import lustre/element/html
 
@@ -103,9 +87,33 @@ pub type AppleMusicConfig =
 pub type AppleMusicMediaType =
   embed.AppleMusicMediaType
 
+pub type TwitterConfig =
+  embed.TwitterConfig
+
+pub type TikTokConfig =
+  embed.TikTokConfig
+
+pub type InstagramConfig =
+  embed.InstagramConfig
+
 /// Create a default Bluesky configuration with no handle resolver.
 pub fn bluesky_config() -> BlueskyConfig {
   embed.bluesky_config()
+}
+
+/// Create a default Twitter/X configuration.
+pub fn twitter_config() -> TwitterConfig {
+  embed.twitter_config()
+}
+
+/// Create a default TikTok configuration.
+pub fn tiktok_config() -> TikTokConfig {
+  embed.tiktok_config()
+}
+
+/// Create a default Instagram configuration.
+pub fn instagram_config() -> InstagramConfig {
+  embed.instagram_config()
 }
 
 /// Create a default YouTube configuration with privacy-enhanced mode enabled.
@@ -214,8 +222,153 @@ pub fn bluesky_resolver(
   config: BlueskyConfig,
   resolve: fn(String) -> Result(String, Nil),
 ) -> BlueskyConfig {
-  let embed.BlueskyConfig(..) = config
-  embed.BlueskyConfig(resolve_handle: Some(resolve))
+  embed.BlueskyConfig(..config, resolve_handle: Some(resolve))
+}
+
+/// Set the CSS aspect ratio (e.g. `"56.25%"`) for responsive YouTube embeds.
+pub fn youtube_aspect_ratio(
+  config: YoutubeConfig,
+  aspect_ratio: String,
+) -> YoutubeConfig {
+  embed.YoutubeConfig(..config, aspect_ratio: Some(aspect_ratio))
+}
+
+/// Set the CSS aspect ratio (e.g. `"56.25%"`) for responsive Vimeo embeds.
+pub fn vimeo_aspect_ratio(
+  config: VimeoConfig,
+  aspect_ratio: String,
+) -> VimeoConfig {
+  embed.VimeoConfig(..config, aspect_ratio: Some(aspect_ratio))
+}
+
+/// Set the CSS aspect ratio (e.g. `"56.25%"`) for responsive Twitch embeds.
+pub fn twitch_aspect_ratio(
+  config: TwitchConfig,
+  aspect_ratio: String,
+) -> TwitchConfig {
+  embed.TwitchConfig(..config, aspect_ratio: Some(aspect_ratio))
+}
+
+/// Set the CSS aspect ratio (e.g. `"56.25%"`) for responsive TED embeds.
+pub fn ted_aspect_ratio(config: TedConfig, aspect_ratio: String) -> TedConfig {
+  let embed.TedConfig(..) = config
+  embed.TedConfig(aspect_ratio: Some(aspect_ratio))
+}
+
+/// Set the CSS aspect ratio (e.g. `"56.25%"`) for responsive OpenStreetMap
+/// embeds.
+pub fn openstreetmap_aspect_ratio(
+  config: OpenStreetMapConfig,
+  aspect_ratio: String,
+) -> OpenStreetMapConfig {
+  let embed.OpenStreetMapConfig(..) = config
+  embed.OpenStreetMapConfig(aspect_ratio: Some(aspect_ratio))
+}
+
+/// Set the Spotify embed width in pixels.
+pub fn spotify_width(config: SpotifyConfig, width: Int) -> SpotifyConfig {
+  embed.SpotifyConfig(..config, width: Some(width))
+}
+
+/// Set the Spotify embed height in pixels for albums, playlists, artists,
+/// episodes, and shows.
+pub fn spotify_height(config: SpotifyConfig, height: Int) -> SpotifyConfig {
+  embed.SpotifyConfig(..config, height: Some(height))
+}
+
+/// Set the Spotify embed height in pixels for individual tracks.
+pub fn spotify_track_height(
+  config: SpotifyConfig,
+  track_height: Int,
+) -> SpotifyConfig {
+  embed.SpotifyConfig(..config, track_height: Some(track_height))
+}
+
+/// Set the SoundCloud embed width in pixels.
+pub fn soundcloud_width(
+  config: SoundCloudConfig,
+  width: Int,
+) -> SoundCloudConfig {
+  embed.SoundCloudConfig(..config, width: Some(width))
+}
+
+/// Set the SoundCloud embed height in pixels.
+pub fn soundcloud_height(
+  config: SoundCloudConfig,
+  height: Int,
+) -> SoundCloudConfig {
+  embed.SoundCloudConfig(..config, height: Some(height))
+}
+
+/// Set the Apple Music embed maximum width in pixels.
+pub fn apple_music_width(
+  config: AppleMusicConfig,
+  width: Int,
+) -> AppleMusicConfig {
+  embed.AppleMusicConfig(..config, width: Some(width))
+}
+
+/// Set the Apple Music embed height in pixels for albums, artists, playlists,
+/// and music videos.
+pub fn apple_music_height(
+  config: AppleMusicConfig,
+  height: Int,
+) -> AppleMusicConfig {
+  embed.AppleMusicConfig(..config, height: Some(height))
+}
+
+/// Set the Apple Music embed height in pixels for individual songs.
+pub fn apple_music_song_height(
+  config: AppleMusicConfig,
+  song_height: Int,
+) -> AppleMusicConfig {
+  embed.AppleMusicConfig(..config, song_height: Some(song_height))
+}
+
+/// Set the Mastodon static embed width in pixels.
+pub fn mastodon_width(config: MastodonConfig, width: Int) -> MastodonConfig {
+  embed.MastodonConfig(..config, width: Some(width))
+}
+
+/// Set the initial Mastodon component-path iframe height in pixels.
+pub fn mastodon_height(config: MastodonConfig, height: Int) -> MastodonConfig {
+  embed.MastodonConfig(..config, height: Some(height))
+}
+
+/// Set the Pixelfed static embed width in pixels.
+pub fn pixelfed_width(config: PixelfedConfig, width: Int) -> PixelfedConfig {
+  embed.PixelfedConfig(..config, width: Some(width))
+}
+
+/// Set the initial Pixelfed component-path iframe height in pixels.
+pub fn pixelfed_height(config: PixelfedConfig, height: Int) -> PixelfedConfig {
+  embed.PixelfedConfig(..config, height: Some(height))
+}
+
+/// Set the initial Bluesky component-path iframe height in pixels.
+pub fn bluesky_height(config: BlueskyConfig, height: Int) -> BlueskyConfig {
+  embed.BlueskyConfig(..config, height: Some(height))
+}
+
+/// Set the initial Twitter/X component-path iframe height in pixels.
+pub fn twitter_height(config: TwitterConfig, height: Int) -> TwitterConfig {
+  let embed.TwitterConfig(..) = config
+  embed.TwitterConfig(height: Some(height))
+}
+
+/// Set the initial TikTok component-path iframe height in pixels.
+pub fn tiktok_height(config: TikTokConfig, height: Int) -> TikTokConfig {
+  let embed.TikTokConfig(..) = config
+  embed.TikTokConfig(height: Some(height))
+}
+
+/// Set the initial Instagram component-path iframe height in pixels.
+pub fn instagram_height(
+  config: InstagramConfig,
+  height: Int,
+) -> InstagramConfig {
+  let embed.InstagramConfig(..) = config
+  embed.InstagramConfig(height: Some(height))
 }
 
 /// Enable YouTube embeds with the given configuration.
@@ -248,9 +401,9 @@ pub fn no_spotify(config: Config) -> Config {
   Config(..config, spotify: None)
 }
 
-/// Enable Twitter/X embeds.
-pub fn twitter(config: Config) -> Config {
-  Config(..config, twitter: Some(Nil))
+/// Enable Twitter/X embeds with the given configuration.
+pub fn twitter(config: Config, twitter_config: TwitterConfig) -> Config {
+  Config(..config, twitter: Some(twitter_config))
 }
 
 /// Disable Twitter/X embeds.
@@ -258,9 +411,9 @@ pub fn no_twitter(config: Config) -> Config {
   Config(..config, twitter: None)
 }
 
-/// Enable TikTok embeds.
-pub fn tiktok(config: Config) -> Config {
-  Config(..config, tiktok: Some(Nil))
+/// Enable TikTok embeds with the given configuration.
+pub fn tiktok(config: Config, tiktok_config: TikTokConfig) -> Config {
+  Config(..config, tiktok: Some(tiktok_config))
 }
 
 /// Disable TikTok embeds.
@@ -278,9 +431,9 @@ pub fn no_bluesky(config: Config) -> Config {
   Config(..config, bluesky: None)
 }
 
-/// Enable Instagram embeds.
-pub fn instagram(config: Config) -> Config {
-  Config(..config, instagram: Some(Nil))
+/// Enable Instagram embeds with the given configuration.
+pub fn instagram(config: Config, instagram_config: InstagramConfig) -> Config {
+  Config(..config, instagram: Some(instagram_config))
 }
 
 /// Disable Instagram embeds.
@@ -374,20 +527,17 @@ pub fn detect(url: String) -> Option(Embed) {
 
 /// Detect an embeddable link from a URL using a custom configuration.
 pub fn detect_with(url: String, config: Config) -> Option(Embed) {
-  case uri.parse(url) {
-    Ok(parsed) -> do_detect(parsed, config)
-    Error(_) -> None
-  }
+  detect.detect_with(url, config)
 }
 
 /// Render a detected embed as HTML using the default configuration.
 pub fn render(embed: Embed) -> Element(msg) {
-  do_render(embed, default_config())
+  detect.render_with(embed, default_config())
 }
 
 /// Render a detected embed as HTML using a custom configuration.
 pub fn render_with(embed: Embed, config: Config) -> Element(msg) {
-  do_render(embed, config)
+  detect.render_with(embed, config)
 }
 
 /// Detect and render in one step using the default configuration.
@@ -462,72 +612,22 @@ fn default_fallback(
   html.a(attrs, children)
 }
 
-fn do_detect(url: Uri, config: Config) -> Option(Embed) {
-  use <- try_one_with(config.mastodon, url, mastodon.detect)
-  use <- try_one_with(config.pixelfed, url, pixelfed.detect)
-  use <- try_one(config.youtube, url, youtube.detect)
-  use <- try_one(config.ted, url, ted.detect)
-  use <- try_one(config.vimeo, url, vimeo.detect)
-  use <- try_one(config.spotify, url, spotify.detect)
-  use <- try_one(config.bluesky, url, bluesky.detect)
-  use <- try_one(config.twitch, url, twitch.detect)
-  use <- try_one(config.soundcloud, url, soundcloud.detect)
-  use <- try_one(config.twitter, url, twitter.detect)
-  use <- try_one(config.tiktok, url, tiktok.detect)
-  use <- try_one(config.instagram, url, instagram.detect)
-  use <- try_one(config.openstreetmap, url, openstreetmap.detect)
-  use <- try_one(config.apple_music, url, apple_music.detect)
-  None
+/// Register the `<inlay-embed url="…">` custom element with the given base
+/// configuration. Call this once from a browser `main`, then use the tag in your
+/// markup or [`embed_element`](#embed_element) in a Lustre view.
+///
+/// Registration is browser-only; on other targets it returns
+/// `lustre.NotABrowser`.
+pub fn configure(config: Config) -> Result(Nil, lustre.Error) {
+  component.configure(config)
 }
 
-fn do_render(embed: Embed, config: Config) -> Element(msg) {
-  let assert Ok(el) = case embed {
-    YoutubeVideo(..) | YoutubePlaylist(..) -> youtube.render(embed, config)
-    VimeoVideo(..) -> vimeo.render(embed, config)
-    SpotifyMedia(..) -> spotify.render(embed, config)
-    Tweet(..) -> twitter.render(embed, config)
-    TikTokVideo(..) -> tiktok.render(embed, config)
-    BlueskyPost(..) -> bluesky.render(embed, config)
-    InstagramPost(..) -> instagram.render(embed, config)
-    TwitchChannel(..) | TwitchVideo(..) -> twitch.render(embed, config)
-    MapLocation(..) -> openstreetmap.render(embed, config)
-    TedTalk(..) -> ted.render(embed, config)
-    SoundCloudTrack(..) -> soundcloud.render(embed, config)
-    MastodonPost(..) -> mastodon.render(embed, config)
-    PixelfedPost(..) -> pixelfed.render(embed, config)
-    AppleMusicMedia(..) -> apple_music.render(embed, config)
-  }
-  el
+/// Register `<inlay-embed>` with the default configuration.
+pub fn register() -> Result(Nil, lustre.Error) {
+  component.register()
 }
 
-fn try_one(
-  enabled: Option(a),
-  url: Uri,
-  detector: fn(Uri) -> Option(Embed),
-  next: fn() -> Option(Embed),
-) -> Option(Embed) {
-  case enabled {
-    Some(_) ->
-      case detector(url) {
-        Some(found) -> Some(found)
-        None -> next()
-      }
-    None -> next()
-  }
-}
-
-fn try_one_with(
-  enabled: Option(a),
-  url: Uri,
-  detector: fn(Uri, a) -> Option(Embed),
-  next: fn() -> Option(Embed),
-) -> Option(Embed) {
-  case enabled {
-    Some(cfg) ->
-      case detector(url, cfg) {
-        Some(found) -> Some(found)
-        None -> next()
-      }
-    None -> next()
-  }
+/// Render the `<inlay-embed>` custom-element tag with the given attributes.
+pub fn embed_element(attributes: List(Attribute(msg))) -> Element(msg) {
+  component.embed_element(attributes)
 }
